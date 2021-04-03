@@ -1,6 +1,11 @@
-import { suma, resta } from './calc';
+import express from 'express';
 
-const saludo = 'Hola';
-console.log(saludo);
-console.log(suma(2, 3));
-console.log(resta(5, 2));
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hola from TypeScript');
+});
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => console.log(`Servidor escuchando desde: ${port}`));
