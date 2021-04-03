@@ -1,0 +1,39 @@
+{
+  "name": "ts-api-rest",
+  "version": "1.0.0",
+  "description": "Ejemplo de API REST con TypeScript",
+  "main": "/build/index.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "dev:watch": "nodemon",
+    "dev:run": "ts-node src/index.ts",
+    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node build/index.js",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watchAll"
+  },
+  "keywords": [
+    "TypeScript",
+    "NodeJS"
+  ],
+  "author": "joseluisgs",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^26.0.22",
+    "@types/node": "^14.14.16",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "eslint": "^7.16.0",
+    "eslint-config-airbnb-typescript": "^12.0.0",
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.4",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  }
+}
