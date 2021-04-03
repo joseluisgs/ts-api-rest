@@ -1,18 +1,18 @@
 # TypeScrip API REST
 Ejemplo de un API REST realizada con TypeScript
 
-
 [![TypeScript](https://img.shields.io/badge/NativeScript-Ready-blue)](https://www.typescriptlang.org/)
 [![NodeJS](https://img.shields.io/badge/NodeJS-Ready-83BA63)](https://nodejs.org/es/)
-[![JS Code](https://img.shields.io/badge/JS%20Code-ES2019-yellow)](https://www.ecma-international.org/ecma-262)
 [![JS Style](https://img.shields.io/badge/JS%20Style-AirBnB-ff69b4)](https://airbnb.io/javascript)
 [![Licence](https://img.shields.io/github/license/joseluisgs/todo-native-script)](./LICENSE)
-![GitHub](https://img.shields.io/github/last-commit/joseluisgs/todo-native-script)
-
+![GitHub](https://img.shields.io/github/last-commit/joseluisgs/ts-api-rest)
 
 ## Sobre el proyecto
 
-El proyecto consiste en que tengas un ejemplo de API REST pero realizada con TypeScript con el objetivo de mejorar con tipos tus desarrollos. Además de usar Jest para test
+El proyecto consiste en que tengas un ejemplo de API REST pero realizada con TypeScript con el objetivo de mejorar con tipos tus desarrollos.
+
+### JEST
+Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo un enfoque TDD.
 
 ## Autor
 
