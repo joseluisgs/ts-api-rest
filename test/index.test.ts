@@ -1,6 +1,7 @@
 import server from '../src';
 import env from '../src/env';
 
+
 process.env.NODE_ENV = 'test';
 
 /**

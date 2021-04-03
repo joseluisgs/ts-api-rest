@@ -1,5 +1,6 @@
 import express from 'express';
 import env from './env';
+import config from './config';
 
 /**
  * Clase servidor de la API REST
@@ -22,6 +23,9 @@ class Server {
    * @returns nuestro servidor
    */
   start() {
+    // Le apliacamos la configuracion a nuestro Servidor
+    config(this.app);
+
     // Nos ponemos a escuchar a un puerto definido en la configuracion
     this.instancia = this.app.listen(env.PORT, () => {
       const address = this.instancia.address(); // obtenemos la dirección
