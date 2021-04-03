@@ -1,11 +1,68 @@
 import express from 'express';
+import env from './env';
 
-const app = express();
+/**
+ * Clase servidor de la API REST
+ */
+class Server {
+  private app: express.Express;
 
-app.get('/', (req, res) => {
-  res.send('Hola from TypeScript');
+  private instancia: any;
+
+  /**
+   * Constructor
+   */
+  constructor() {
+    // Cargamos express como servidor
+    this.app = express();
+  }
+
+  /**
+   * Inicia el Servidor
+   * @returns nuestro servidor
+   */
+  start() {
+    // Nos ponemos a escuchar a un puerto definido en la configuracion
+    this.instancia = this.app.listen(env.PORT, () => {
+      const address = this.instancia.address(); // obtenemos la dirección
+      const host = address.address === '::' ? 'localhost' : address; // dependiendo de la dirección asi configuramos
+      const port = env.PORT; // el puerto
+      const url = `http://${host}:${port}`;
+      this.instancia.url = url;
+
+      if (process.env.NODE_ENV !== 'test') {
+        console.log(`⚑ Servidor API REST escuchando ✓ -> ${url}`);
+      }
+    });
+    return this.instancia; // Devolvemos la instancia del servidor
+  }
+
+  /**
+   * Cierra el Servidor
+   */
+  close() {
+    // Desconectamos el socket server
+    this.instancia.close();
+    if (process.env.NODE_ENV !== 'test') {
+      console.log('▣  Servidor parado');
+    }
+  }
+}
+
+/**
+ * Devuelve la instancia de conexión siempre la misma, singleton
+ */
+const server = new Server();
+
+// Exportamos la variable
+export default server;
+
+// Si ningun fichero está haciendo un import y ejecutando ya el servidor, lo lanzamos nosotros
+if (!module.parent) {
+  server.start();
+}
+
+process.on('unhandledRejection', (err) => {
+  console.log('✕ Custom Error: An unhandledRejection occurred');
+  console.log(`✕ Custom Error: Rejection: ${err}`);
 });
-
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => console.log(`Servidor escuchando desde: ${port}`));
