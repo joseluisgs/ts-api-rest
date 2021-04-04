@@ -17,7 +17,7 @@ describe('Suite Test de Servidor', () => {
     servidor = server.start();
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     servidor.close();
   });
 

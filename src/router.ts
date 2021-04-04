@@ -4,6 +4,7 @@
  */
 
 import express from 'express';
+import notas from './routes/notas';
 
 const Path = 'api';
 const Version = 'v1';
@@ -19,4 +20,7 @@ export default (app: express.Express) => {
   app.get(`/${Path}/${Version}/hola`, (req, res) => {
     res.status(200).send(`¡Hola API!: version ${Version}`);
   });
+
+  // Recurso notas
+  app.use(`/${Path}/${Version}/notas`, notas);
 };
