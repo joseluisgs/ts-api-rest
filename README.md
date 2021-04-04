@@ -22,7 +22,7 @@ Ejemplo de un API REST realizada con TypeScript
 
 El proyecto consiste en que tengas un ejemplo de API REST pero realizada con TypeScript con el objetivo de mejorar con tipos tus desarrollos.
 
-![img](assets/image.png)
+![assets/image.png](https://hiddenbg.zentica-global.com/wp-content/uploads/2020/12/secure-rest-api-in-nodejs-18f43b3033c239da5d2525cfd9fdc98f.png)
 
 ## Arquitectura y diseño
 El diseño de esta API REST se corresponde con el patron Servidor->Enrutador->Controlador->Modelo. 
