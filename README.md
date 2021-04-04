@@ -10,8 +10,11 @@ Ejemplo de un API REST realizada con TypeScript
 - [TypeScrip API REST](#typescrip-api-rest)
   - [Sobre el proyecto](#sobre-el-proyecto)
   - [Arquitectura y diseño](#arquitectura-y-diseño)
-    - [JEST](#jest)
-    - [EndPoints](#endpoints)
+  - [TDD: JEST](#tdd-jest)
+  - [EndPoints](#endpoints)
+  - [Despliegue](#despliegue)
+    - [Docker](#docker)
+    - [Docker Hub](#docker-hub)
   - [Autor](#autor)
   - [Licencia](#licencia)
 
@@ -30,10 +33,10 @@ El Modelo es la estructuración de los datos a tratar.
 
 En todo momento se ofrece información de la petición en base a los códigos de estado HTTP.
 
-### JEST
+## TDD: JEST
 Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo un enfoque TDD y Supertest para testear las peticiones HTTP a la API.
 
-### EndPoints
+## EndPoints
 Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /api/vx/recurso, donde x es a versión de esta api, y recurso es el recurso a consumir, por ejemplo /api/v1/notas.
 
 | Método | Recurso | Descripción |
@@ -41,6 +44,18 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 | GET| notas | Obtiene todas las notas |
 | Contenido 2-1 | Contenido 2-2 | Contenido 2-3 |
 | Contenido 3-1 | Contenido 3-2 | Contenido 3-3 |
+
+## Despliegue
+### Docker
+
+Esta API se puede desplegar con Docker si te gusta ya sea a través de su Dockerfile o a otraves de Docker Hub, para ello:
+```bash
+$ docker build -t joseluisgs/joseluisgs/ts-api-rest .
+$ docker run -it -p 8000:8000 --rm --name ts-api-rest-1 joseluisgs/ts-api-rest
+```
+### Docker Hub
+Disponible en: https://hub.docker.com/r/joseluisgs/ts-api-rest
+
 
 ## Autor
 
