@@ -13,7 +13,7 @@ const router = express.Router();
 // - Autenticados
 
 // GET Listar todos los elementos
-router.get('/', notasController.getAll);
+router.get('/', notasController.findAll);
 
 // GET Obtiene un elemento por por ID
 // router.get('/:id', notasController.notaById);

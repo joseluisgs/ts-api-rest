@@ -6,12 +6,12 @@ import { Request, Response } from 'express';
 
 class NotasController {
   /**
-   * GET ALL: Obtiene todos los elementos
+   * Obtiene todos los elementos existentes
    * @param req Request
    * @param res Response
    * @returns 200 if OK and JSON
    */
-  public async getAll(req: Request, res: Response) {
+  public async findAll(req: Request, res: Response) {
     return res.status(200).send('Notas');
   }
 }
