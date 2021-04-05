@@ -48,6 +48,7 @@ Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo u
 
 ## Ejecición
 Tareas que podemos ejecutar dentro de nuestra aplicación. Te recomiendo leer el fichero package.json:
+```bash
 - npm install: para instalar las dependencias.
 - npm start (npm run start): ejecuta el entorno producción.
 - npm run dev: compila el TypeScript en busca de errores.
@@ -57,6 +58,7 @@ Tareas que podemos ejecutar dentro de nuestra aplicación. Te recomiendo leer el
 - npm test (npm run test): ejecuta todos los test.
 - npm run test:coverage: obtiene el índice de cobertura del código.
 - npm run test:watch: realiza los test mientras modificas el código.
+```
 
 ## Despliegue
 ### Docker
