@@ -10,8 +10,9 @@ Ejemplo de un API REST realizada con TypeScript
 - [TypeScrip API REST](#typescrip-api-rest)
   - [Sobre el proyecto](#sobre-el-proyecto)
   - [Arquitectura y diseño](#arquitectura-y-diseño)
-  - [TDD: JEST](#tdd-jest)
   - [EndPoints](#endpoints)
+  - [TDD: JEST](#tdd-jest)
+  - [Ejecición](#ejecición)
   - [Despliegue](#despliegue)
     - [Docker](#docker)
     - [Docker Hub](#docker-hub)
@@ -33,9 +34,6 @@ El Modelo es la estructuración de los datos a tratar.
 
 En todo momento se ofrece información de la petición en base a los códigos de estado HTTP.
 
-## TDD: JEST
-Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo un enfoque TDD y Supertest para testear las peticiones HTTP a la API.
-
 ## EndPoints
 Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /api/vx/recurso, donde x es a versión de esta api, y recurso es el recurso a consumir, por ejemplo /api/v1/juegos.
 
@@ -44,6 +42,21 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 | GET| /juegos | Obtiene todos las juegos |
 | GET | /juegos/id| obtiene el juego con el id indicado |
 | Contenido 3-1 | Contenido 3-2 | Contenido 3-3 |
+
+## TDD: JEST
+Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo un enfoque TDD y Supertest para testear las peticiones HTTP a la API.
+
+## Ejecición
+Tareas que podemos ejecutar dentro de nuestra aplicación. Te recomiendo leer el fichero package.json:
+- npm install: para instalar las dependencias.
+- npm start (npm run start): ejecuta el entorno producción.
+- npm run dev: compila el TypeScript en busca de errores.
+- npm run dev:run: ejecuta el código en podo desarrollo.
+- npm run dev:watch: ejecuta el código en modo observador.
+- npm run build: construye la versión de distribución/producción (en el directorio build).
+- npm test (npm run test): ejecuta todos los test.
+- npm run test:coverage: obtiene el índice de cobertura del código.
+- npm run test:watch: realiza los test mientras modificas el código.
 
 ## Despliegue
 ### Docker
