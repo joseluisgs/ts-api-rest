@@ -65,8 +65,8 @@ Tareas que podemos ejecutar dentro de nuestra aplicación. Te recomiendo leer el
 
 Esta API se puede desplegar con Docker si te gusta ya sea a través de su Dockerfile o a otraves de Docker Hub, para ello:
 ```bash
-$ docker build -t joseluisgs/joseluisgs/ts-api-rest .
-$ docker run -it -p 8000:8000 --rm --name ts-api-rest-1 joseluisgs/ts-api-rest
+- docker build -t joseluisgs/joseluisgs/ts-api-rest .
+- docker run -it -p 8000:8000 --rm --name ts-api-rest-1 joseluisgs/ts-api-rest
 ```
 ### Docker Hub
 Disponible en: https://hub.docker.com/r/joseluisgs/ts-api-rest
