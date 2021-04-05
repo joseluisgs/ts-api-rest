@@ -1,10 +1,10 @@
 /* eslint-disable class-methods-use-this */
 import { Request, Response } from 'express';
 /**
- * CONTROLADOR DE NOTAS
+ * CONTROLADOR DE Juegos
  */
 
-class NotasController {
+class JuegosController {
   /**
    * Obtiene todos los elementos existentes
    * @param req Request
@@ -12,9 +12,9 @@ class NotasController {
    * @returns 200 if OK and JSON
    */
   public async findAll(req: Request, res: Response) {
-    return res.status(200).send('Notas');
+    return res.status(200).send('Juegos');
   }
 }
 
 // Exportamos el módulo
-export default new NotasController();
+export default new JuegosController();

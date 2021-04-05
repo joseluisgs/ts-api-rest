@@ -4,7 +4,7 @@
  */
 
 import express from 'express';
-import notas from './routes/notas';
+import juegosRouter from './routes/juegos';
 
 const Path = 'api';
 const Version = 'v1';
@@ -22,5 +22,5 @@ export default (app: express.Express) => {
   });
 
   // Recurso notas
-  app.use(`/${Path}/${Version}/notas`, notas);
+  app.use(`/${Path}/${Version}/juegos`, juegosRouter);
 };

@@ -4,16 +4,16 @@
 
 // Cargamos librerías, podemos usar la sitaxis EM6: import { Router } from 'express';
 import express from 'express';
-import notasController from '../controllers/notas';
+import juegosController from '../controllers/juegos';
 
 // Cargamos el enrutador
-const router = express.Router();
+const juegosRouter = express.Router();
 
 // Esta ruta está protegida en todos los elementos:
 // - Autenticados
 
 // GET Listar todos los elementos
-router.get('/', notasController.findAll);
+juegosRouter.get('/', juegosController.findAll);
 
 // GET Obtiene un elemento por por ID
 // router.get('/:id', notasController.notaById);
@@ -28,4 +28,4 @@ router.get('/', notasController.findAll);
 // router.delete('/:id', notasController.deleteNotaById);
 
 // Exprotamos el módulo
-export default router;
+export default juegosRouter;

@@ -1,17 +1,16 @@
 import request from 'supertest';
 import server from '../src';
-import env from '../src/env';
 
 process.env.NODE_ENV = 'test';
 
 /**
  * TEST: NOTAS
  */
-describe('Suite Test de Notas', () => {
+describe('Suite Test de Juegos', () => {
   let servidor: any;
   const Path = 'api';
   const Version = 'v1';
-  const EndPoint = 'notas';
+  const EndPoint = 'juegos';
 
   // instanciamos el servidor
   beforeAll(async () => {

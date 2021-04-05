@@ -25,7 +25,7 @@ El proyecto consiste en que tengas un ejemplo de API REST pero realizada con Typ
 ![assets/image.png](https://hiddenbg.zentica-global.com/wp-content/uploads/2020/12/secure-rest-api-in-nodejs-18f43b3033c239da5d2525cfd9fdc98f.png)
 
 ## Arquitectura y diseño
-El diseño de esta API REST se corresponde con el patron Servidor->Enrutador->Controlador->Modelo. 
+El diseño de esta API REST se corresponde con el patrón Servidor->Enrutador->Controlador->Modelo. 
 El Servidor escucha en un puesto diversas peticiones. Las procesa según su ruta o punto de entrada y se las pasa al Enrutador.
 El Enrutador analiza la petición dependiendo de la ruta y se la pasa al Controlador correspondiente a dicha ruta que ejecutará el método indicado.
 El Controlador realiza el método indicado según la ruta consultando los modelos y almacenamiento para ello.
@@ -37,11 +37,11 @@ En todo momento se ofrece información de la petición en base a los códigos de
 Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo un enfoque TDD y Supertest para testear las peticiones HTTP a la API.
 
 ## EndPoints
-Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /api/vx/recurso, donde x es a versión de esta api, y recurso es el recurso a consumir, por ejemplo /api/v1/notas.
+Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /api/vx/recurso, donde x es a versión de esta api, y recurso es el recurso a consumir, por ejemplo /api/v1/juegos.
 
 | Método | Recurso | Descripción |
 | -- | -- | -- |
-| GET| notas | Obtiene todas las notas |
+| GET| juegos | Obtiene todas las juegos |
 | Contenido 2-1 | Contenido 2-2 | Contenido 2-3 |
 | Contenido 3-1 | Contenido 3-2 | Contenido 3-3 |
 
