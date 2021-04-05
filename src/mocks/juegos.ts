@@ -6,6 +6,7 @@ import Juego from '../interfaces/juego';
 
 const listaJuegos:Juego[] = [
   {
+    id: '1',
     titulo: 'Spider-Man',
     descripcion: 'Spider-Man. Juego del Año',
     plataforma: 'Play Station',
@@ -15,6 +16,7 @@ const listaJuegos:Juego[] = [
     usuarioId: '111',
   },
   {
+    id: '2',
     titulo: 'Resident Evil Revelations 2',
     descripcion: 'Otra aventura de Resident Evil',
     plataforma: 'Nintendo Switch',

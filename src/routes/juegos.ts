@@ -16,7 +16,7 @@ const juegosRouter = express.Router();
 juegosRouter.get('/', juegosController.findAll);
 
 // GET Obtiene un elemento por por ID
-// router.get('/:id', notasController.notaById);
+juegosRouter.get('/:id', juegosController.findById);
 
 // POST Añadir Elemento.
 // router.post('/', notasController.addNota);

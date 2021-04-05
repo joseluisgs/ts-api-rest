@@ -41,8 +41,8 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 
 | Método | Recurso | Descripción |
 | -- | -- | -- |
-| GET| juegos | Obtiene todas las juegos |
-| Contenido 2-1 | Contenido 2-2 | Contenido 2-3 |
+| GET| /juegos | Obtiene todos las juegos |
+| GET | /juegos/id| obtiene el juego con el id indicado |
 | Contenido 3-1 | Contenido 3-2 | Contenido 3-3 |
 
 ## Despliegue

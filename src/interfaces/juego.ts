@@ -1,7 +1,9 @@
 /**
  * Definición de interfaz para casar los datos de juegos.
+ * Juego un poco con campos obligatorios o no
  */
 export default interface Juego {
+  id?: string;
   titulo: string;
   descripcion?: string;
   plataforma?: string;

@@ -22,10 +22,28 @@ describe('Suite Test de Juegos', () => {
     servidor.close();
   });
 
-  test(`Debería obetener el metodo GET ALL /${Path}/${Version}/${EndPoint}`, async () => {
-    const response = await request(servidor).get(`/${Path}/${Version}/${EndPoint}`);
-    expect(response.status).toBe(200);
-    const listaJuegos: JuegoInterface[] = response.body;
-    expect(listaJuegos.length).toBeGreaterThanOrEqual(0);
+  describe('Suite Test de GET ALL', () => {
+    test(`Debería obetener el metodo GET ALL /${Path}/${Version}/${EndPoint}`, async () => {
+      const response = await request(servidor).get(`/${Path}/${Version}/${EndPoint}`);
+      expect(response.status).toBe(200);
+      const listaJuegos: JuegoInterface[] = response.body;
+      expect(listaJuegos.length).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('Suite Test de GET BY ID', () => {
+    test(`Debería obetener un juego con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const ID = '1';
+      const response = await request(servidor).get(`/${Path}/${Version}/${EndPoint}/${ID}`);
+      expect(response.status).toBe(200);
+      expect(response.body.id).toBe(ID);
+    });
+
+    test(`NO Debería obetener un juego con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const ID = 'aaa';
+      const response = await request(servidor).get(`/${Path}/${Version}/${EndPoint}/${ID}`);
+      expect(response.status).toBe(404);
+      expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
+    });
   });
 });
