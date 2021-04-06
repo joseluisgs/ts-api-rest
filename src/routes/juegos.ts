@@ -25,7 +25,7 @@ juegosRouter.post('/', juegosController.add);
 juegosRouter.put('/:id', juegosController.update);
 
 // DELETE Elimina un elemento por ID.
-// router.delete('/:id', notasController.deleteNotaById);
+juegosRouter.delete('/:id', juegosController.remove);
 
 // Exprotamos el módulo
 export default juegosRouter;

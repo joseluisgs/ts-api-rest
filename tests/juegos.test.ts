@@ -131,4 +131,23 @@ describe('Suite Test de Juegos', () => {
       expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
     });
   });
+
+  describe('Suite Test de DELETE', () => {
+    test(`Debería eliminar un juego dado su ID /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const ID = '1';
+      const response = await request(servidor)
+        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`);
+      expect(response.status).toBe(200);
+      const item:Juego = response.body;
+      expect(item).toHaveProperty('titulo');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
+    });
+
+    test(`NO Debería eliminar un juego pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const ID = 'aaa';
+      const response = await request(servidor)
+        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`);
+      expect(response.status).toBe(404);
+      expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
+    });
+  });
 });

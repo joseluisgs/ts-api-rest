@@ -53,7 +53,6 @@ class JuegosController {
    * @returns 201 si OK y elemento nuevo JSON
    */
   public async add(req: Request, res: Response) {
-    // Creamos el juego
     try {
       if (!checkBody(req)) {
         return res.status(422).json({
@@ -84,13 +83,12 @@ class JuegosController {
   }
 
   /**
-   * Añade un elemento
+   * Actualiza un elemento dado su ID
    * @param req Request
    * @param res Response
-   * @returns 201 si OK y elemento nuevo JSON
+   * @returns 200 si OK y elemento nuevo JSON
    */
   public async update(req: Request, res: Response) {
-    // Creamos el juego
     try {
       const index = ListaJuegos.findIndex((juego) => juego.id === req.params.id);
       if (index === -1) {
@@ -117,6 +115,34 @@ class JuegosController {
         usuarioId: data.usuarioId,
       };
       ListaJuegos[index] = data;
+      return res.status(200).json(data);
+    } catch (err) {
+      console.log(err.toString());
+      return res.status(500).json({
+        success: false,
+        mensaje: err.toString(),
+        data: null,
+      });
+    }
+  }
+
+  /**
+   * Elimina un elemento dado su ID
+   * @param req Request
+   * @param res Response
+   * @returns 200 si OK y elemento nuevo JSON
+   */
+  public async remove(req: Request, res: Response) {
+    try {
+      const index = ListaJuegos.findIndex((juego) => juego.id === req.params.id);
+      if (index === -1) {
+        return res.status(404).json({
+          success: false,
+          mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
+        });
+      }
+      const data = ListaJuegos[index];
+      ListaJuegos.splice(index, 1);
       return res.status(200).json(data);
     } catch (err) {
       console.log(err.toString());
