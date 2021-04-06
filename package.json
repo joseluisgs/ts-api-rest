@@ -12,6 +12,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "jest",
+    "test:sec": "jest --runInBand",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watchAll"
   },
