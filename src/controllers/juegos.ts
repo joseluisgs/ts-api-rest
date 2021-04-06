@@ -7,7 +7,7 @@ import Juego from '../interfaces/juego';
 const checkBody = (req: Request) => req.body.titulo && req.body.titulo.trim().length > 0;
 
 /**
- * CONTROLADOR DE Juegos
+ * CONTROLADOR DE JUEGOS
  */
 
 class JuegosController {
@@ -66,7 +66,7 @@ class JuegosController {
         descripcion: req.body.descripcion || undefined,
         plataforma: req.body.plataforma || undefined,
         fecha: req.body.fecha || new Date(),
-        activo: req.body.activo || false,
+        activo: Boolean(req.body.activo) || false,
         imagen: req.body.imagen || undefined,
         usuarioId: req.body.usuarioId || undefined,
       };
@@ -110,7 +110,7 @@ class JuegosController {
         descripcion: req.body.descripcion || data.descripcion,
         plataforma: req.body.plataforma || data.plataforma,
         fecha: req.body.fecha || data.fecha,
-        activo: req.body.activo || data.activo,
+        activo: Boolean(req.body.activo) || data.activo,
         imagen: req.body.imagen || data.imagen,
         usuarioId: data.usuarioId,
       };
