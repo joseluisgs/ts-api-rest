@@ -16,6 +16,7 @@ Ejemplo de un API REST realizada con TypeScript
   - [Despliegue](#despliegue)
     - [Docker](#docker)
     - [Docker Hub](#docker-hub)
+  - [Prueba y consumo](#prueba-y-consumo)
   - [Autor](#autor)
   - [Licencia](#licencia)
 
@@ -71,6 +72,8 @@ Esta API se puede desplegar con Docker si te gusta ya sea a través de su Docker
 ### Docker Hub
 Disponible en: https://hub.docker.com/r/joseluisgs/ts-api-rest
 
+## Prueba y consumo
+Puedes probar y consumir la API usando por ejemplo Postman y su [fichero](./TS-API-REST.postman_collection.json).
 
 ## Autor
 

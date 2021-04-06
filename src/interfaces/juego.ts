@@ -3,7 +3,7 @@
  * Juego un poco con campos obligatorios o no
  */
 export default interface Juego {
-  id?: string;
+  id?: string|null;
   titulo: string;
   descripcion?: string;
   plataforma?: string;

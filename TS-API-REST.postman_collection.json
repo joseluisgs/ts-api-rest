@@ -1,0 +1,37 @@
+{
+	"info": {
+		"_postman_id": "fb1d472d-4e79-43fb-b088-7ff21bda0449",
+		"name": "TS-API-REST",
+		"description": "API REST en TypeScript",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET ALL",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/v1/juegos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"juegos",
+						""
+					]
+				},
+				"description": "Get All"
+			},
+			"response": []
+		}
+	]
+}
