@@ -42,8 +42,14 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 | -- | -- | -- |
 | GET| /juegos | Obtiene todos las juegos |
 | GET | /juegos/id| Obtiene el juego con el id indicado |
+| POST | /juegos| Añade el juego |
 | PUT | /juegos/id| Modifica el juego con el id indicado |
 | DELETE | /juegos/id| Elimina el juego con el id indicado |
+| GET| /files | Obtiene todos los ficheros |
+| GET | /files/id| Obtiene el fichero con el id indicado |
+| POST | /files| Añade el fichero |
+| PUT | /files/id| Modifica el fichero con el id indicado |
+| DELETE | /files/id| Elimina el fichero con el id indicado |
 
 ## TDD: JEST
 Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo un enfoque TDD y Supertest para testear las peticiones HTTP a la API.
@@ -60,6 +66,7 @@ Tareas que podemos ejecutar dentro de nuestra aplicación. Te recomiendo leer el
 - npm test (npm run test): ejecuta todos los test.
 - npm run test:coverage: obtiene el índice de cobertura del código.
 - npm run test:watch: realiza los test mientras modificas el código.
+- npm run test:sec: realiza los test de manera secuencial pues puede dar error al cerrar el servidor.
 ```
 
 ## Despliegue
