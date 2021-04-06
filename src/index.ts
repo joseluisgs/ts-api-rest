@@ -1,4 +1,5 @@
 import express from 'express';
+import chalk from 'chalk';
 import env from './env';
 import config from './config';
 import router from './router';
@@ -38,7 +39,7 @@ class Server {
       const port = env.PORT; // el puerto
       this.instancia.url = `http://${host}:${port}`;
       if (process.env.NODE_ENV !== 'test') {
-        console.log(`⚑ Servidor API REST escuchando ✓ -> ${this.instancia.url}`);
+        console.log(chalk.green(`🟢 Servidor API REST escuchando ✅ -> ${this.instancia.url}`));
       }
     });
     return this.instancia; // Devolvemos la instancia del servidor
@@ -51,7 +52,7 @@ class Server {
     // Desconectamos el socket server
     this.instancia.close();
     if (process.env.NODE_ENV !== 'test') {
-      console.log('▣  Servidor parado');
+      console.log(chalk.grey('⚪️ Servidor parado ❎'));
     }
   }
 }
@@ -70,6 +71,6 @@ if (!module.parent) {
 }
 
 process.on('unhandledRejection', (err) => {
-  console.log('✕ Custom Error: An unhandledRejection occurred');
-  console.log(`✕ Custom Error: Rejection: ${err}`);
+  console.log(chalk.red('❌ Custom Error: An unhandledRejection occurred'));
+  console.log(chalk.red(`❌ Custom Error: Rejection: ${err}`));
 });

@@ -13,10 +13,15 @@ const env = {
   // GENERAL
   NODE_ENV: process.env.NODE_ENV,
   ENV: process.env.ENV || 'development',
-  DEBUG: process.env.DEBUG || true,
+  DEBUG: Boolean(process.env.DEBUG) || true,
   HOST: process.env.HOST || 'localhost',
-  PORT: process.env.PORT || 8000,
+  PORT: Number(process.env.PORT) || 8000,
   TIMEZONE: process.env.TIMEZONE || 'Europe/Madrid',
+  // FICHEROS
+  FILE_SIZE: Number(process.env.FILE_SIZE) || 2,
+  FILES_PATH: process.env.FILES_PATH || 'files',
+  FILES_URL: process.env.FILES_URL || 'files',
+  STORAGE: `${__dirname}/public/${process.env.FILES_PATH}/`,
 };
 
 export default env;
