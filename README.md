@@ -41,8 +41,9 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 | Método | Recurso | Descripción |
 | -- | -- | -- |
 | GET| /juegos | Obtiene todos las juegos |
-| GET | /juegos/id| obtiene el juego con el id indicado |
-| Contenido 3-1 | Contenido 3-2 | Contenido 3-3 |
+| GET | /juegos/id| Obtiene el juego con el id indicado |
+| PUT | /juegos/id| Modifica el juego con el id indicado |
+| DELETE | /juegos/id| Elimina el juego con el id indicado |
 
 ## TDD: JEST
 Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo un enfoque TDD y Supertest para testear las peticiones HTTP a la API.
