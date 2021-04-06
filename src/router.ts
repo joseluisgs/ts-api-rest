@@ -5,6 +5,7 @@
 
 import express from 'express';
 import juegosRouter from './routes/juegos';
+import filesRouter from './routes/files';
 
 const Path = 'api';
 const Version = 'v1';
@@ -23,4 +24,7 @@ export default (app: express.Express) => {
 
   // Recurso notas
   app.use(`/${Path}/${Version}/juegos`, juegosRouter);
+
+  // Recurso fichero
+  app.use(`/${Path}/${Version}/files`, filesRouter);
 };
