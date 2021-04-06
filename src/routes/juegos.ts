@@ -22,7 +22,7 @@ juegosRouter.get('/:id', juegosController.findById);
 juegosRouter.post('/', juegosController.add);
 
 // PUT Modifica un elemento por ID.
-// router.put('/:id', notasController.editNotaById);
+juegosRouter.put('/:id', juegosController.update);
 
 // DELETE Elimina un elemento por ID.
 // router.delete('/:id', notasController.deleteNotaById);
