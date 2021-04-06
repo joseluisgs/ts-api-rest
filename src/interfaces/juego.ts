@@ -7,7 +7,7 @@ export default interface Juego {
   titulo: string;
   descripcion?: string;
   plataforma?: string;
-  fecha: Date;
+  fecha?: Date;
   activo?: Boolean;
   imagen?: string;
   usuarioId?: string;

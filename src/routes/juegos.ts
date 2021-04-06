@@ -19,7 +19,7 @@ juegosRouter.get('/', juegosController.findAll);
 juegosRouter.get('/:id', juegosController.findById);
 
 // POST Añadir Elemento.
-// router.post('/', notasController.addNota);
+juegosRouter.post('/', juegosController.add);
 
 // PUT Modifica un elemento por ID.
 // router.put('/:id', notasController.editNotaById);
