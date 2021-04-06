@@ -7,153 +7,333 @@
 	},
 	"item": [
 		{
-			"name": "GET ALL",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
+			"name": "Juegos",
+			"item": [
+				{
+					"name": "GET ALL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/juegos/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"juegos",
+								""
+							]
+						},
+						"description": "Obtiene todos"
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/juegos/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"juegos",
-						""
-					]
+				{
+					"name": "GET BY ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/juegos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"juegos",
+								"1"
+							]
+						},
+						"description": "Obtiene un elemento dado su id"
+					},
+					"response": []
 				},
-				"description": "Obtiene todos"
-			},
-			"response": []
+				{
+					"name": "ADD",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titulo\": \"The Legend of Zelda: Breath of the Wild\",\n    \"descripcion\": \"La nueva Aventura de Zelda\",\n    \"plataforma\": \"Nintendo Switch\",\n    \"imagen\": \"https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg\",\n    \"usuarioId\": \"111\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/juegos/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"juegos",
+								""
+							]
+						},
+						"description": "Añade un elemento"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titulo\": \"The Legend of Zelda: Breath of the Wild\",\n    \"descripcion\": \"La nueva Aventura de Zelda\",\n    \"plataforma\": \"Nintendo Switch\",\n    \"imagen\": \"https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg\",\n    \"usuarioId\": \"111\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/juegos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"juegos",
+								"1"
+							]
+						},
+						"description": "Modifica un elemento dado su id"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/juegos/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"juegos",
+								"1"
+							]
+						},
+						"description": "Elimina un elemento dado su ID"
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "GET BY ID",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
+			"name": "Files",
+			"item": [
+				{
+					"name": "GET ALL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/files",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"files"
+							]
+						},
+						"description": "Obtiene todos"
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/juegos/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"juegos",
-						"1"
-					]
+				{
+					"name": "GET BY ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/files/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"1"
+							]
+						},
+						"description": "Obtiene un elemento dado su id"
+					},
+					"response": []
 				},
-				"description": "Obtiene un elemento dado su id"
-			},
-			"response": []
-		},
-		{
-			"name": "ADD ITEM",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "ADD",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"zelda.jpg\",\n    \"url\": \"https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg\",\n    \"usuarioId\": \"111\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/files/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"files",
+								""
+							]
+						},
+						"description": "Añade un elemento"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"zelda.jpg\",\n    \"url\": \"https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg\",\n    \"usuarioId\": \"111\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/files/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"1"
+							]
+						},
+						"description": "Modifica un elemento dado su id"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/v1/files/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"1"
+							]
+						},
+						"description": "Elimina un elemento dado su ID"
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3e42d397-3cd7-4dd4-9e91-a9e3260d4f9e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
 					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"titulo\": \"The Legend of Zelda: Breath of the Wild\",\n    \"descripcion\": \"La nueva Aventura de Zelda\",\n    \"plataforma\": \"Nintendo Switch\",\n    \"imagen\": \"https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg\",\n    \"usuarioId\": \"111\"\n}"
 				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/juegos/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"juegos",
-						""
-					]
-				},
-				"description": "Añade un elemento"
-			},
-			"response": []
-		},
-		{
-			"name": "PUT ITEM",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"listen": "test",
+					"script": {
+						"id": "f7d27a5a-22f8-42be-947c-f5e771950721",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
 					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"titulo\": \"The Legend of Zelda: Breath of the Wild\",\n    \"descripcion\": \"La nueva Aventura de Zelda\",\n    \"plataforma\": \"Nintendo Switch\",\n    \"imagen\": \"https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg\",\n    \"usuarioId\": \"111\"\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/juegos/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"juegos",
-						"1"
-					]
-				},
-				"description": "Modifica un elemento dado su id"
-			},
-			"response": []
-		},
-		{
-			"name": "DELETE ITEM",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:8000/api/v1/juegos/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"v1",
-						"juegos",
-						"1"
-					]
-				},
-				"description": "Elimina un elemento dado su ID"
-			},
-			"response": []
+				}
+			]
 		}
 	]
 }
