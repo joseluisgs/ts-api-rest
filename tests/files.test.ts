@@ -60,44 +60,46 @@ describe('Suite Test de Ficheros', () => {
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
     });
+
+    test(`NO Debería añadir un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
+      const data = `${__dirname}/test.jpg`;
+      const response = await request(servidor)
+        .post(`/${Path}/${Version}/${EndPoint}`)
+        .attach('kk', data);
+      expect(response.status).toBe(422);
+      expect(response.body.mensaje).toContain('No hay fichero para subir o no se ha insertado el campo file');
+    });
   });
 
   describe('Suite Test de PUT', () => {
     test(`Debería modificar un fichero con los datos indicados /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = '1';
-      const data: File = {
-        nombre: 'zelda.png',
-        url: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
-      };
+      const data = `${__dirname}/test.jpg`;
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
-        .send(data);
+        .attach('file', data);
       expect(response.status).toBe(200);
-      const item:File = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-      expect(item.nombre).toBe(data.nombre);
-      expect(item.url).toBe(data.url);
+      expect(response.body).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
     });
 
-    test(`NO Debería modificar un fichero pues falta el nombre /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = '1';
-      const data: File = {
-        nombre: '',
-        url: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
-        usuarioId: '111',
-      };
+    test(`NO Debería modificar un fichero pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const ID = 'aaa';
+      const data = `${__dirname}/test.jpg`;
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
-        .send(data);
-      expect(response.status).toBe(422);
-      expect(response.body.mensaje).toContain('El nombre del fichero es un campo obligatorio');
-    });
-
-    test(`NO Debería modificar un juego pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
-      const response = await request(servidor)
-        .put(`/${Path}/${Version}/${EndPoint}/${ID}`);
+        .attach('file', data);
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
+    });
+
+    test(`NO Debería añadir un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
+      const ID = '1';
+      const data = `${__dirname}/test.jpg`;
+      const response = await request(servidor)
+        .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .attach('kk', data);
+      expect(response.status).toBe(422);
+      expect(response.body.mensaje).toContain('No hay fichero para subir o no se ha insertado el campo file');
     });
   });
 

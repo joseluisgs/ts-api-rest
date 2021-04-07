@@ -1,12 +1,12 @@
 /* eslint-disable class-methods-use-this */
 import { Request, Response } from 'express';
+import { v1 as uuidv1 } from 'uuid';
 import env from '../env';
 import ListaFiles from '../mocks/files';
 import File from '../interfaces/file';
 
-// Comprueba que la entrada es correcta de datos. Es auxiliar
-
-const checkFile = (req: Request) => req.files && Object.keys(req.files).length !== 0;
+// Comprueba que la entrada es correcta de datos. Es auxiliar. En este caso solo acepto un fichero
+const checkFile = (req: Request) => req.files && Object.keys(req.files).length !== 0 && req.files.file;
 
 /**
  * CONTROLADOR DE FICHEROS
@@ -59,13 +59,13 @@ class FilesController {
       if (!checkFile(req)) {
         return res.status(422).json({
           success: false,
-          mensaje: 'No hay fichero para subir',
+          mensaje: 'No hay fichero para subir o no se ha insertado el campo file',
         });
       }
       const file: any = req.files?.file;
       let fileName = file.name.replace(/\s/g, ''); // Si tienes espacios en blanco se los quitamos
       const fileExt = fileName.split('.').pop(); // Nos quedamos con su extension
-      fileName = `${file.md5}.${fileExt}`; // this.getStorageName(file);
+      fileName = `${uuidv1()}.${fileExt}`; // this.getStorageName(file);
       file.mv(env.STORAGE + fileName);
 
       const data: File = {
@@ -105,18 +105,12 @@ class FilesController {
       if (!checkFile(req)) {
         return res.status(422).json({
           success: false,
-          mensaje: 'El nombre del fichero es un campo obligatorio',
+          mensaje: 'No hay fichero para subir o no se ha insertado el campo file',
         });
       }
-      let data = ListaFiles[index];
-      data = {
-        id: data.id,
-        nombre: req.body.nombre || data.nombre,
-        url: req.body.url || data.url,
-        fecha: req.body.fecha || data.fecha,
-        usuarioId: data.usuarioId,
-      };
-      ListaFiles[index] = data;
+      const data = ListaFiles[index];
+      const file: any = req.files?.file;
+      file.mv(env.STORAGE + data.nombre);
       return res.status(200).json(data);
     } catch (err) {
       console.log(err.toString());
