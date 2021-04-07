@@ -1,10 +1,12 @@
 /* eslint-disable class-methods-use-this */
 import { Request, Response } from 'express';
+import env from '../env';
 import ListaFiles from '../mocks/files';
 import File from '../interfaces/file';
 
 // Comprueba que la entrada es correcta de datos. Es auxiliar
-const checkBody = (req: Request) => req.body.nombre && req.body.nombre.trim().length > 0;
+
+const checkFile = (req: Request) => req.files && Object.keys(req.files).length !== 0;
 
 /**
  * CONTROLADOR DE FICHEROS
@@ -54,18 +56,24 @@ class FilesController {
    */
   public async add(req: Request, res: Response) {
     try {
-      if (!checkBody(req)) {
+      if (!checkFile(req)) {
         return res.status(422).json({
           success: false,
-          mensaje: 'El nombre del fichero es un campo obligatorio',
+          mensaje: 'No hay fichero para subir',
         });
       }
+      const file: any = req.files?.file;
+      let fileName = file.name.replace(/\s/g, ''); // Si tienes espacios en blanco se los quitamos
+      const fileExt = fileName.split('.').pop(); // Nos quedamos con su extension
+      fileName = `${file.md5}.${fileExt}`; // this.getStorageName(file);
+      file.mv(env.STORAGE + fileName);
+
       const data: File = {
         id: Date.now().toString(),
-        nombre: req.body.nombre,
-        url: req.body.url || undefined,
-        fecha: req.body.fecha || new Date(),
-        usuarioId: req.body.usuarioId || undefined,
+        nombre: fileName,
+        url: fileName,
+        fecha: new Date(),
+        usuarioId: '111',
       };
       ListaFiles.push(data);
       return res.status(201).json(data);
@@ -94,7 +102,7 @@ class FilesController {
           mensaje: `No se ha encontrado ningún fichero con ID: ${req.params.id}`,
         });
       }
-      if (!checkBody(req)) {
+      if (!checkFile(req)) {
         return res.status(422).json({
           success: false,
           mensaje: 'El nombre del fichero es un campo obligatorio',

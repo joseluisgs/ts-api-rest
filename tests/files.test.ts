@@ -53,32 +53,12 @@ describe('Suite Test de Ficheros', () => {
 
   describe('Suite Test de POST', () => {
     test(`Debería añadir un fichero con los datos indicados /${Path}/${Version}/${EndPoint}`, async () => {
-      const data: File = {
-        nombre: 'zelda.jpg',
-        url: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
-        usuarioId: '111',
-      };
+      const data = `${__dirname}/test.jpg`;
       const response = await request(servidor)
         .post(`/${Path}/${Version}/${EndPoint}`)
-        .send(data);
+        .attach('file', data);
       expect(response.status).toBe(201);
-      const item:File = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-      expect(item.nombre).toBe(data.nombre);
-      expect(item.url).toBe(data.url);
-      expect(item.usuarioId).toBe(data.usuarioId);
-    });
-
-    test(`NO Debería añadir un fichero pues falta el nombre /${Path}/${Version}/${EndPoint}`, async () => {
-      const data: File = {
-        nombre: '',
-        url: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
-        usuarioId: '111',
-      };
-      const response = await request(servidor)
-        .post(`/${Path}/${Version}/${EndPoint}`)
-        .send(data);
-      expect(response.status).toBe(422);
-      expect(response.body.mensaje).toContain('El nombre del fichero es un campo obligatorio');
+      expect(response.body).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
     });
   });
 
