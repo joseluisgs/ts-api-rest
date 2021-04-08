@@ -12,6 +12,8 @@ describe('Suite Test de Ficheros', () => {
   const Path = 'api';
   const Version = 'v1';
   const EndPoint = 'files';
+  const file = `${__dirname}/test.jpg`;
+  let fileID: string | undefined;
 
   // instanciamos el servidor
   beforeAll(async () => {
@@ -32,14 +34,33 @@ describe('Suite Test de Ficheros', () => {
     });
   });
 
+  describe('Suite Test de POST', () => {
+    test(`Debería añadir un fichero con los datos indicados /${Path}/${Version}/${EndPoint}`, async () => {
+      const response = await request(servidor)
+        .post(`/${Path}/${Version}/${EndPoint}`)
+        .attach('file', file);
+      expect(response.status).toBe(201);
+      expect(response.body).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
+      // Para el resto de test
+      fileID = response.body.id;
+    });
+
+    test(`NO Debería añadir un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
+      const response = await request(servidor)
+        .post(`/${Path}/${Version}/${EndPoint}`)
+        .attach('kk', file);
+      expect(response.status).toBe(422);
+      expect(response.body.mensaje).toContain('No hay fichero para subir o no se ha insertado el campo file');
+    });
+  });
+
   describe('Suite Test de GET BY ID', () => {
     test(`Debería obetener un fichero con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = '1';
       const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}/${ID}`);
+        .get(`/${Path}/${Version}/${EndPoint}/${fileID}`);
       expect(response.status).toBe(200);
       const item:File = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-      expect(item.id).toBe(ID);
+      expect(item.id).toBe(fileID);
     });
 
     test(`NO Debería obetener un fichero con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
@@ -51,53 +72,28 @@ describe('Suite Test de Ficheros', () => {
     });
   });
 
-  describe('Suite Test de POST', () => {
-    test(`Debería añadir un fichero con los datos indicados /${Path}/${Version}/${EndPoint}`, async () => {
-      const data = `${__dirname}/test.jpg`;
-      const response = await request(servidor)
-        .post(`/${Path}/${Version}/${EndPoint}`)
-        .attach('file', data);
-      expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-    });
-
-    test(`NO Debería añadir un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
-      const data = `${__dirname}/test.jpg`;
-      const response = await request(servidor)
-        .post(`/${Path}/${Version}/${EndPoint}`)
-        .attach('kk', data);
-      expect(response.status).toBe(422);
-      expect(response.body.mensaje).toContain('No hay fichero para subir o no se ha insertado el campo file');
-    });
-  });
-
   describe('Suite Test de PUT', () => {
     test(`Debería modificar un fichero con los datos indicados /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = '1';
-      const data = `${__dirname}/test.jpg`;
       const response = await request(servidor)
-        .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
-        .attach('file', data);
+        .put(`/${Path}/${Version}/${EndPoint}/${fileID}`)
+        .attach('file', file);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
     });
 
     test(`NO Debería modificar un fichero pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = 'aaa';
-      const data = `${__dirname}/test.jpg`;
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
-        .attach('file', data);
+        .attach('file', file);
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
     });
 
     test(`NO Debería añadir un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
-      const ID = '1';
-      const data = `${__dirname}/test.jpg`;
       const response = await request(servidor)
-        .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
-        .attach('kk', data);
+        .put(`/${Path}/${Version}/${EndPoint}/${fileID}`)
+        .attach('kk', file);
       expect(response.status).toBe(422);
       expect(response.body.mensaje).toContain('No hay fichero para subir o no se ha insertado el campo file');
     });
