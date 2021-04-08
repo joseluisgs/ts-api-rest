@@ -8,6 +8,8 @@ import File from '../interfaces/file';
 
 // Comprueba que la entrada es correcta de datos. Es auxiliar. En este caso solo acepto un fichero
 const checkFile = (req: Request) => req.files && Object.keys(req.files).length !== 0 && req.files.file;
+// Devuleve la url completa de una petición
+const getFullUrl = (req: Request) => `${req.protocol}://${req.headers.host}${req.originalUrl}`;
 
 /**
  * CONTROLADOR DE FICHEROS
@@ -39,6 +41,7 @@ class FilesController {
           mensaje: `No se ha encontrado ningún fichero con ID: ${req.params.id}`,
         });
       }
+      // res.download(data.nombre);
       return res.status(200).json(data);
     } catch (err) {
       return res.status(500).json({
@@ -70,9 +73,9 @@ class FilesController {
       file.mv(env.STORAGE + fileName);
 
       const data: File = {
-        id: Date.now().toString(),
+        id: fileName,
         nombre: fileName,
-        url: fileName,
+        url: `${getFullUrl(req)}download/${fileName}`,
         fecha: new Date(),
         usuarioId: '111',
       };
@@ -144,6 +147,31 @@ class FilesController {
       return res.status(200).json(data);
     } catch (err) {
       console.log(err.toString());
+      return res.status(500).json({
+        success: false,
+        mensaje: err.toString(),
+        data: null,
+      });
+    }
+  }
+
+  /**
+   * Descarga el elemento por el ID
+   * @param req Request
+   * @param res Response
+   * @returns 200 si OK y elemento JSON
+   */
+  public async download(req: Request, res: Response) {
+    try {
+      const data = ListaFiles.find((file) => file.id === req.params.id);
+      if (!data) {
+        return res.status(404).json({
+          success: false,
+          mensaje: `No se ha encontrado ningún fichero con ID: ${req.params.id}`,
+        });
+      }
+      return res.status(200).download(env.STORAGE + data.nombre);
+    } catch (err) {
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),

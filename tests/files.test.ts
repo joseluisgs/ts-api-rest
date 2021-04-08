@@ -72,6 +72,22 @@ describe('Suite Test de Ficheros', () => {
     });
   });
 
+  describe('Suite Test de DWONLOAD BY ID', () => {
+    test(`Debería descargar un fichero con ID indicado /${Path}/${Version}/${EndPoint}/download/ID`, async () => {
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}/download/${fileID}`);
+      expect(response.status).toBe(200);
+    });
+
+    test(`NO Debería descacargar un fichero con ID indicado /${Path}/${Version}/${EndPoint}/download/ID`, async () => {
+      const ID = 'aaa';
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}/download/${ID}`);
+      expect(response.status).toBe(404);
+      expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
+    });
+  });
+
   describe('Suite Test de PUT', () => {
     test(`Debería modificar un fichero con los datos indicados /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const response = await request(servidor)

@@ -47,6 +47,7 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 | DELETE | /juegos/id| Elimina el juego con el id indicado |
 | GET| /files | Obtiene todos los ficheros |
 | GET | /files/id| Obtiene el fichero con el id indicado |
+| GET | /files/download/id| Descarga el fichero con el id indicado |
 | POST | /files| Añade el fichero |
 | PUT | /files/id| Modifica el fichero con el id indicado |
 | DELETE | /files/id| Elimina el fichero con el id indicado |

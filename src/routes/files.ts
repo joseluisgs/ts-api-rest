@@ -27,5 +27,8 @@ filesRouter.put('/:id', filesController.update);
 // DELETE Elimina un elemento por ID.
 filesRouter.delete('/:id', filesController.remove);
 
+// GET Descarga un fichero dado su ID
+filesRouter.get('/download/:id', filesController.download);
+
 // Exprotamos el módulo
 export default filesRouter;
