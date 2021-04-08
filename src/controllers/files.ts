@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Request, Response } from 'express';
 import { v1 as uuidv1 } from 'uuid';
+import fs from 'fs';
 import env from '../env';
 import ListaFiles from '../mocks/files';
 import File from '../interfaces/file';
@@ -139,6 +140,7 @@ class FilesController {
       }
       const data = ListaFiles[index];
       ListaFiles.splice(index, 1);
+      fs.unlinkSync(env.STORAGE + data.nombre);
       return res.status(200).json(data);
     } catch (err) {
       console.log(err.toString());

@@ -13,7 +13,7 @@ describe('Suite Test de Ficheros', () => {
   const Version = 'v1';
   const EndPoint = 'files';
   const file = `${__dirname}/test.jpg`;
-  let fileID: string | undefined;
+  let fileID: string;
 
   // instanciamos el servidor
   beforeAll(async () => {
@@ -101,9 +101,8 @@ describe('Suite Test de Ficheros', () => {
 
   describe('Suite Test de DELETE', () => {
     test(`Debería eliminar un fichero dado su ID /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = '1';
       const response = await request(servidor)
-        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`);
+        .delete(`/${Path}/${Version}/${EndPoint}/${fileID}`);
       expect(response.status).toBe(200);
       const item:File = response.body;
       expect(item).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
