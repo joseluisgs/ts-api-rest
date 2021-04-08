@@ -7,5 +7,5 @@ export default interface User {
   email: string;
   password: string;
   fecha?: Date;
-  roles: string;
+  role?: string;
 }

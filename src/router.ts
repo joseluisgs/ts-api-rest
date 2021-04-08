@@ -6,6 +6,7 @@
 import express from 'express';
 import juegosRouter from './routes/juegos';
 import filesRouter from './routes/files';
+import userRouter from './routes/user';
 
 const Path = 'api';
 const Version = 'v1';
@@ -27,4 +28,7 @@ export default (app: express.Express) => {
 
   // Recurso fichero
   app.use(`/${Path}/${Version}/files`, filesRouter);
+
+  // Recursos de usuarios (autneticación y autorización)
+  app.use(`/${Path}/${Version}/user`, userRouter);
 };
