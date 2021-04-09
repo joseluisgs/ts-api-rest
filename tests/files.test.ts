@@ -24,16 +24,6 @@ describe('Suite Test de Ficheros', () => {
     servidor.close();
   });
 
-  describe('Suite Test de GET ALL', () => {
-    test(`Debería obetener el metodo GET ALL /${Path}/${Version}/${EndPoint}`, async () => {
-      const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}`);
-      expect(response.status).toBe(200);
-      const listaItems: File[] = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-      expect(listaItems.length).toBeGreaterThanOrEqual(0);
-    });
-  });
-
   describe('Suite Test de POST', () => {
     test(`Debería añadir un fichero con los datos indicados /${Path}/${Version}/${EndPoint}`, async () => {
       const response = await request(servidor)
@@ -43,6 +33,16 @@ describe('Suite Test de Ficheros', () => {
       expect(response.body).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
       // Para el resto de test
       fileID = response.body.id;
+    });
+
+    describe('Suite Test de GET ALL', () => {
+      test(`Debería obetener el metodo GET ALL /${Path}/${Version}/${EndPoint}`, async () => {
+        const response = await request(servidor)
+          .get(`/${Path}/${Version}/${EndPoint}`);
+        expect(response.status).toBe(200);
+        const listaItems: File[] = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
+        expect(listaItems.length).toBeGreaterThanOrEqual(0);
+      });
     });
 
     test(`NO Debería añadir un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
@@ -124,7 +124,7 @@ describe('Suite Test de Ficheros', () => {
       expect(item).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
     });
 
-    test(`NO Debería eliminar un juego pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
+    test(`NO Debería eliminar un fichero pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = 'aaa';
       const response = await request(servidor)
         .delete(`/${Path}/${Version}/${EndPoint}/${ID}`);
