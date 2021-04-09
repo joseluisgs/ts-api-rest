@@ -12,6 +12,7 @@ describe('Suite Test de Juegos', () => {
   const Path = 'api';
   const Version = 'v1';
   const EndPoint = 'juegos';
+  let juegoID: string;
 
   // instanciamos el servidor
   beforeAll(async () => {
@@ -20,35 +21,6 @@ describe('Suite Test de Juegos', () => {
 
   afterAll(async () => {
     servidor.close();
-  });
-
-  describe('Suite Test de GET ALL', () => {
-    test(`Debería obetener el metodo GET ALL /${Path}/${Version}/${EndPoint}`, async () => {
-      const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}`);
-      expect(response.status).toBe(200);
-      const listaItems: Juego[] = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-      expect(listaItems.length).toBeGreaterThanOrEqual(0);
-    });
-  });
-
-  describe('Suite Test de GET BY ID', () => {
-    test(`Debería obetener un juego con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = '1';
-      const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}/${ID}`);
-      expect(response.status).toBe(200);
-      const item:Juego = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-      expect(item.id).toBe(ID);
-    });
-
-    test(`NO Debería obetener un juego con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
-      const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}/${ID}`);
-      expect(response.status).toBe(404);
-      expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
-    });
   });
 
   describe('Suite Test de POST', () => {
@@ -69,6 +41,7 @@ describe('Suite Test de Juegos', () => {
       expect(item.descripcion).toBe(data.descripcion);
       expect(item.plataforma).toBe(data.plataforma);
       expect(item.imagen).toBe(data.imagen);
+      juegoID = response.body.id;
     });
 
     test(`NO Debería añadir un juego pues falta el título /${Path}/${Version}/${EndPoint}`, async () => {
@@ -87,9 +60,36 @@ describe('Suite Test de Juegos', () => {
     });
   });
 
+  describe('Suite Test de GET ALL', () => {
+    test(`Debería obetener el metodo GET ALL /${Path}/${Version}/${EndPoint}`, async () => {
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}`);
+      expect(response.status).toBe(200);
+      const listaItems: Juego[] = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
+      expect(listaItems.length).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('Suite Test de GET BY ID', () => {
+    test(`Debería obetener un juego con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}/${juegoID}`);
+      expect(response.status).toBe(200);
+      const item:Juego = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
+      expect(item.id).toBe(juegoID);
+    });
+
+    test(`NO Debería obetener un juego con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const ID = 'aaa';
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}/${ID}`);
+      expect(response.status).toBe(404);
+      expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
+    });
+  });
+
   describe('Suite Test de PUT', () => {
     test(`Debería modificar un juego con los datos indicados /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = '1';
       const data: Juego = {
         titulo: 'The Legend of Zelda: Breath of the Wild',
         descripcion: 'La nueva Aventura de Zelda',
@@ -97,7 +97,7 @@ describe('Suite Test de Juegos', () => {
         imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
       };
       const response = await request(servidor)
-        .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .put(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
         .send(data);
       expect(response.status).toBe(200);
       const item:Juego = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
@@ -105,10 +105,10 @@ describe('Suite Test de Juegos', () => {
       expect(item.descripcion).toBe(data.descripcion);
       expect(item.plataforma).toBe(data.plataforma);
       expect(item.imagen).toBe(data.imagen);
+      expect(item.id).toBe(juegoID);
     });
 
     test(`NO Debería modificar un juego pues falta el título /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = '1';
       const data: Juego = {
         titulo: '',
         descripcion: 'La nueva Aventura de Zelda',
@@ -117,7 +117,7 @@ describe('Suite Test de Juegos', () => {
         usuarioId: '111',
       };
       const response = await request(servidor)
-        .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .put(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
         .send(data);
       expect(response.status).toBe(422);
       expect(response.body.mensaje).toContain('El título del juego es un campo obligatorio');
@@ -134,12 +134,12 @@ describe('Suite Test de Juegos', () => {
 
   describe('Suite Test de DELETE', () => {
     test(`Debería eliminar un juego dado su ID /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = '1';
       const response = await request(servidor)
-        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`);
+        .delete(`/${Path}/${Version}/${EndPoint}/${juegoID}`);
       expect(response.status).toBe(200);
       const item:Juego = response.body;
       expect(item).toHaveProperty('titulo');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
+      expect(item.id).toBe(juegoID);
     });
 
     test(`NO Debería eliminar un juego pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
