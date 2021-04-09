@@ -1,8 +1,6 @@
 /node_modules
 /package-lock.json
 /build
-build
 /coverage
 .env
-/public
-
+/src/public/files

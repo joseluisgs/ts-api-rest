@@ -40,6 +40,11 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 
 | Método | Recurso | Descripción |
 | -- | -- | -- |
+| POST| user/register | Registra un usuario/a |
+| POST| user/login | Se indentifica en el sistema y obtiene token de acceso |
+| GET| /user/id | Obtiene los datos del usuario/a con id indicado |
+| PUT| /user/id | Modifica los datos del usuario/a con id indicado |
+| DELETE| /user/id | Elimina el usuario/a con id indicado |
 | GET| /juegos | Obtiene todos las juegos |
 | GET | /juegos/id| Obtiene el juego con el id indicado |
 | POST | /juegos| Añade el juego |

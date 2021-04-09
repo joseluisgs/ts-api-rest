@@ -4,9 +4,10 @@ import ListaUsers from '../mocks/users';
 import User from '../interfaces/user';
 
 // Comprueba que la entrada es correcta de datos. Es auxiliar
-const checkBody = (req: Request) => req.body.nombre && req.body.nombre.trim().length > 0
-  && req.body.email && req.body.email.trim().length > 0
+const checkLogin = (req: Request) => req.body.email && req.body.email.trim().length > 0
   && req.body.password && req.body.email.trim().length > 0;
+
+const checkBody = (req: Request) => checkLogin(req) && req.body.nombre && req.body.nombre.trim().length > 0;
 
 /**
  * CONTROLADOR DE USUARIOS
@@ -150,17 +151,17 @@ class UserController {
    */
   public async login(req: Request, res: Response) {
     try {
-      if (!checkBody(req)) {
+      if (!checkLogin(req)) {
         return res.status(422).json({
           success: false,
           mensaje: 'Faltan campos obligatorios como nombre, email o passowrd',
         });
       }
-      const data = ListaUsers.find((user) => user.id === req.params.id);
-      if (!data) {
-        return res.status(404).json({
+      const data = ListaUsers.find((user) => user.email === req.body.email);
+      if (!data || data.password !== req.body.password) {
+        return res.status(403).json({
           success: false,
-          mensaje: `No se ha encontrado ningún/a usuario/a con ID: ${req.params.id}`,
+          mensaje: 'Usuario/a o contraseña incorrectos',
         });
       }
       return res.status(200).json(data);
