@@ -1,5 +1,5 @@
 import request from 'supertest';
-import server from '../src';
+import servidor from '../src';
 import Juego from '../src/interfaces/juego';
 
 process.env.NODE_ENV = 'test';
@@ -8,16 +8,10 @@ process.env.NODE_ENV = 'test';
  * TEST: NOTAS
  */
 describe('Suite Test de Juegos', () => {
-  let servidor: any;
   const Path = 'api';
   const Version = 'v1';
   const EndPoint = 'juegos';
   let juegoID: string;
-
-  // instanciamos el servidor
-  beforeAll(async () => {
-    servidor = server.start();
-  });
 
   afterAll(async () => {
     servidor.close();

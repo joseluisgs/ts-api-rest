@@ -56,20 +56,22 @@ class Server {
       console.log(chalk.grey('⚪️ Servidor parado ❎'));
     }
   }
+
+  getInstance() {
+    return this.instancia;
+  }
 }
 
 /**
  * Devuelve la instancia de conexión siempre la misma, singleton
  */
 const server = new Server();
+server.start();
 
 // Exportamos la variable
-export default server;
+export default server.getInstance();
 
 // Si ningun fichero está haciendo un import y ejecutando ya el servidor, lo lanzamos nosotros
-if (!module.parent) {
-  server.start();
-}
 
 process.on('unhandledRejection', (err) => {
   console.log(chalk.red('❌ Custom Error: An unhandledRejection occurred'));

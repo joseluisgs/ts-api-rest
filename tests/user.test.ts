@@ -1,5 +1,5 @@
 import request from 'supertest';
-import server from '../src';
+import servidor from '../src';
 import User from '../src/interfaces/user';
 
 process.env.NODE_ENV = 'test';
@@ -8,16 +8,10 @@ process.env.NODE_ENV = 'test';
  * TEST: USER
  */
 describe('Suite Test de Usuarios', () => {
-  let servidor: any;
   const Path = 'api';
   const Version = 'v1';
   const EndPoint = 'user';
   let userID: string;
-
-  // instanciamos el servidor
-  beforeAll(async () => {
-    servidor = server.start();
-  });
 
   afterAll(async () => {
     servidor.close();

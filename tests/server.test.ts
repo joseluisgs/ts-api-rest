@@ -1,5 +1,6 @@
+import { AddressInfo } from 'node:net';
 import request from 'supertest';
-import server from '../src';
+import servidor from '../src';
 import env from '../src/env';
 
 process.env.NODE_ENV = 'test';
@@ -8,14 +9,8 @@ process.env.NODE_ENV = 'test';
  * TEST: Servidor
  */
 describe('Suite Test de Servidor', () => {
-  let servidor: any;
   const Path = 'api';
   const Version = 'v1';
-
-  // instanciamos el servidor
-  beforeAll(async () => {
-    servidor = server.start();
-  });
 
   afterAll(async () => {
     servidor.close();
@@ -26,7 +21,9 @@ describe('Suite Test de Servidor', () => {
   });
 
   test('Debería iniciarse el escuchar en el puerto por defecto, no es nulo', () => {
-    expect(servidor.address().port).toBe(Number(env.PORT));
+    const address = servidor.address() as AddressInfo;
+    const { port } = address;
+    expect(port).toBe(Number(env.PORT));
   });
 
   test('Debería responder en el metodo GET /', async () => {

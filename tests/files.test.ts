@@ -1,5 +1,5 @@
 import request from 'supertest';
-import server from '../src';
+import servidor from '../src';
 import File from '../src/interfaces/file';
 
 process.env.NODE_ENV = 'test';
@@ -8,17 +8,11 @@ process.env.NODE_ENV = 'test';
  * TEST: FICHEROS
  */
 describe('Suite Test de Ficheros', () => {
-  let servidor: any;
   const Path = 'api';
   const Version = 'v1';
   const EndPoint = 'files';
   const file = `${__dirname}/test.jpg`;
   let fileID: string;
-
-  // instanciamos el servidor
-  beforeAll(async () => {
-    servidor = server.start();
-  });
 
   afterAll(async () => {
     servidor.close();
