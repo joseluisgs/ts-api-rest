@@ -34,6 +34,7 @@ class FilesController {
    */
   public async findById(req: Request, res: Response) {
     try {
+      // Existe
       const data = ListaFiles.find((file) => file.id === req.params.id);
       if (!data) {
         return res.status(404).json({
@@ -41,7 +42,14 @@ class FilesController {
           mensaje: `No se ha encontrado ningún fichero con ID: ${req.params.id}`,
         });
       }
-      // res.download(data.nombre);
+      // Tenemos permiso
+      if (req.user.id !== data.usuarioId) {
+        return res.status(403).json({
+          success: false,
+          mensaje: 'No tienes permisos para realizar esta acción',
+        });
+      }
+      // Acción
       return res.status(200).json(data);
     } catch (err) {
       return res.status(500).json({
@@ -60,12 +68,14 @@ class FilesController {
    */
   public async add(req: Request, res: Response) {
     try {
+      // Todos los datos
       if (!checkFile(req)) {
         return res.status(422).json({
           success: false,
           mensaje: 'No hay fichero para subir o no se ha insertado el campo file',
         });
       }
+      // Accion
       const file: any = req.files?.file;
       let fileName = file.name.replace(/\s/g, ''); // Si tienes espacios en blanco se los quitamos
       const fileExt = fileName.split('.').pop(); // Nos quedamos con su extension
@@ -77,7 +87,7 @@ class FilesController {
         nombre: fileName,
         url: `${getFullUrl(req)}download/${fileName}`,
         fecha: new Date(),
-        usuarioId: '111',
+        usuarioId: req.user.id || undefined,
       };
       ListaFiles.push(data);
       return res.status(201).json(data);
@@ -99,6 +109,7 @@ class FilesController {
    */
   public async update(req: Request, res: Response) {
     try {
+      // Existe
       const index = ListaFiles.findIndex((file) => file.id === req.params.id);
       if (index === -1) {
         return res.status(404).json({
@@ -106,13 +117,22 @@ class FilesController {
           mensaje: `No se ha encontrado ningún fichero con ID: ${req.params.id}`,
         });
       }
+      const data = ListaFiles[index];
+      // Tenemos permiso
+      if (req.user.id !== data.usuarioId) {
+        return res.status(403).json({
+          success: false,
+          mensaje: 'No tienes permisos para realizar esta acción',
+        });
+      }
+      // Todos los campos
       if (!checkFile(req)) {
         return res.status(422).json({
           success: false,
           mensaje: 'No hay fichero para subir o no se ha insertado el campo file',
         });
       }
-      const data = ListaFiles[index];
+      // Acción
       const file: any = req.files?.file;
       file.mv(env.STORAGE + data.nombre);
       return res.status(200).json(data);
@@ -134,6 +154,7 @@ class FilesController {
    */
   public async remove(req: Request, res: Response) {
     try {
+      // Existe
       const index = ListaFiles.findIndex((file) => file.id === req.params.id);
       if (index === -1) {
         return res.status(404).json({
@@ -142,6 +163,15 @@ class FilesController {
         });
       }
       const data = ListaFiles[index];
+      // Tenemos permiso
+      // Tenemos permiso
+      if (req.user.id !== data.usuarioId) {
+        return res.status(403).json({
+          success: false,
+          mensaje: 'No tienes permisos para realizar esta acción',
+        });
+      }
+      // Acción
       ListaFiles.splice(index, 1);
       fs.unlinkSync(env.STORAGE + data.nombre);
       return res.status(200).json(data);

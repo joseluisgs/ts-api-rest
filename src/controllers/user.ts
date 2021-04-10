@@ -70,7 +70,7 @@ class UserController {
         email: req.body.email,
         password: (req.body.password ? bcrypt.hashSync(req.body.password, env.BC_SALT) : ''),
         fecha: new Date(),
-        role: req.body.role || 'USER',
+        role: req.body.role.toUpperCase() || 'USER',
       };
       ListaUsers.push(data);
       return res.status(201).json(data);
@@ -122,7 +122,7 @@ class UserController {
         email: req.body.email || data.nombre,
         password: (req.body.password ? bcrypt.hashSync(req.body.password, env.BC_SALT) : data.password),
         fecha: req.body.fecha || data.fecha,
-        role: req.body.role || data.role,
+        role: req.body.role.toUpperCase() || data.role,
       };
       ListaUsers[index] = data;
       return res.status(200).json(data);

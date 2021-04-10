@@ -1,6 +1,7 @@
 import request from 'supertest';
 import servidor from '../src';
 import File from '../src/interfaces/file';
+import User from '../src/interfaces/user';
 
 process.env.NODE_ENV = 'test';
 
@@ -13,8 +14,44 @@ describe('Suite Test de Ficheros', () => {
   const EndPoint = 'files';
   const file = `${__dirname}/test.jpg`;
   let fileID: string;
+  const userTest: User = {
+    nombre: 'Test Test',
+    email: 'test@test.com',
+    password: 'test123',
+    role: 'ADMIN',
+  };
+  let tokenTest: string;
+
+  beforeAll(async () => {
+    // insertamos al usuario de prueba
+    let response = await request(servidor)
+      .post(`/${Path}/${Version}/user/register`)
+      .send(userTest);
+    expect(response.status).toBe(201);
+
+    // hacemos el login
+    const data = {
+      email: userTest.email,
+      password: userTest.password,
+    };
+    response = await request(servidor)
+      .post(`/${Path}/${Version}/user/login`)
+      .send(data);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('token');
+    expect(response.body).toHaveProperty('user');
+    // Para el resto de test
+    tokenTest = response.body.token;
+    userTest.id = response.body.user.id;
+  });
 
   afterAll(async () => {
+    // Borramos al usuario
+    const response = await request(servidor)
+      .delete(`/${Path}/${Version}/user/${userTest.id}`)
+      .set({ Authorization: `Bearer ${tokenTest}` });
+    expect(response.status).toBe(200);
+    // Cerramos el servidor
     servidor.close();
   });
 
@@ -22,6 +59,7 @@ describe('Suite Test de Ficheros', () => {
     test(`Debería añadir un fichero con los datos indicados /${Path}/${Version}/${EndPoint}`, async () => {
       const response = await request(servidor)
         .post(`/${Path}/${Version}/${EndPoint}`)
+        .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('file', file);
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
@@ -29,29 +67,51 @@ describe('Suite Test de Ficheros', () => {
       fileID = response.body.id;
     });
 
-    describe('Suite Test de GET ALL', () => {
-      test(`Debería obetener el metodo GET ALL /${Path}/${Version}/${EndPoint}`, async () => {
-        const response = await request(servidor)
-          .get(`/${Path}/${Version}/${EndPoint}`);
-        expect(response.status).toBe(200);
-        const listaItems: File[] = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-        expect(listaItems.length).toBeGreaterThanOrEqual(0);
-      });
-    });
-
     test(`NO Debería añadir un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
       const response = await request(servidor)
         .post(`/${Path}/${Version}/${EndPoint}`)
+        .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('kk', file);
       expect(response.status).toBe(422);
       expect(response.body.mensaje).toContain('No hay fichero para subir o no se ha insertado el campo file');
+    });
+
+    test(`NO Debería añadir un juego token invalido /${Path}/${Version}/${EndPoint}`, async () => {
+      const token = `${tokenTest}123`;
+      const response = await request(servidor)
+        .post(`/${Path}/${Version}/${EndPoint}`)
+        .set({ Authorization: `Bearer ${token}` })
+        .send({});
+      expect(response.status).toBe(401);
+      expect(response.body.mensaje).toContain('No autenticado o sesión ha expirado');
+    });
+  });
+
+  describe('Suite Test de GET ALL', () => {
+    test(`Debería obetener el metodo GET ALL /${Path}/${Version}/${EndPoint}`, async () => {
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}`)
+        .set({ Authorization: `Bearer ${tokenTest}` });
+      expect(response.status).toBe(200);
+      const listaItems: File[] = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
+      expect(listaItems.length).toBeGreaterThanOrEqual(0);
+    });
+
+    test(`No Debería obetener el metodo GET ALL token inválido /${Path}/${Version}/${EndPoint}`, async () => {
+      const token = `${tokenTest}123`;
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}`)
+        .set({ Authorization: `Bearer ${token}` });
+      expect(response.status).toBe(401);
+      expect(response.body.mensaje).toContain('No autenticado o sesión ha expirado');
     });
   });
 
   describe('Suite Test de GET BY ID', () => {
     test(`Debería obetener un fichero con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}/${fileID}`);
+        .get(`/${Path}/${Version}/${EndPoint}/${fileID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
       const item:File = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
       expect(item.id).toBe(fileID);
@@ -60,9 +120,19 @@ describe('Suite Test de Ficheros', () => {
     test(`NO Debería obetener un fichero con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = 'aaa';
       const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}/${ID}`);
+        .get(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
+    });
+
+    test(`NO Debería obetener un fichero con ID indicado token inválido en /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const token = `${tokenTest}123`;
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}/${fileID}`)
+        .set({ Authorization: `Bearer ${token}` });
+      expect(response.status).toBe(401);
+      expect(response.body.mensaje).toContain('No autenticado o sesión ha expirado');
     });
   });
 
@@ -86,6 +156,7 @@ describe('Suite Test de Ficheros', () => {
     test(`Debería modificar un fichero con los datos indicados /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${fileID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('file', file);
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
@@ -95,24 +166,37 @@ describe('Suite Test de Ficheros', () => {
       const ID = 'aaa';
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('file', file);
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
     });
 
-    test(`NO Debería añadir un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
+    test(`NO Debería modificar un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${fileID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('kk', file);
       expect(response.status).toBe(422);
       expect(response.body.mensaje).toContain('No hay fichero para subir o no se ha insertado el campo file');
+    });
+
+    test(`NO Debería modificar un fichero, token es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
+      const token = `${tokenTest}123`;
+      const response = await request(servidor)
+        .put(`/${Path}/${Version}/${EndPoint}/${fileID}`)
+        .set({ Authorization: `Bearer ${token}` })
+        .attach('file', file);
+      expect(response.status).toBe(401);
+      expect(response.body.mensaje).toContain('No autenticado o sesión ha expirado');
     });
   });
 
   describe('Suite Test de DELETE', () => {
     test(`Debería eliminar un fichero dado su ID /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const response = await request(servidor)
-        .delete(`/${Path}/${Version}/${EndPoint}/${fileID}`);
+        .delete(`/${Path}/${Version}/${EndPoint}/${fileID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
       const item:File = response.body;
       expect(item).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
@@ -121,9 +205,20 @@ describe('Suite Test de Ficheros', () => {
     test(`NO Debería eliminar un fichero pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = 'aaa';
       const response = await request(servidor)
-        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`);
+        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
+    });
+
+    test(`NO Debería eliminar un fichero, token es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
+      const token = `${tokenTest}123`;
+      const response = await request(servidor)
+        .delete(`/${Path}/${Version}/${EndPoint}/${fileID}`)
+        .set({ Authorization: `Bearer ${token}` })
+        .attach('file', file);
+      expect(response.status).toBe(401);
+      expect(response.body.mensaje).toContain('No autenticado o sesión ha expirado');
     });
   });
 });

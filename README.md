@@ -37,7 +37,7 @@ El Modelo es la estructuración de los datos a tratar.
 En todo momento se ofrece información de la petición en base a los códigos de estado HTTP.
 
 ## Autenticación y Autorización: JWT y Middleware
-Se ha implementado un sistema de atenticación y autorización basado en JWT y aplicando un Middleware para analizar si el usuario puede entrar a un recurso, ya sea por que está autenticado para ello (auth), o tiene permisos dependiendo su rol (grant).
+Se ha implementado un sistema de atenticación y autorización basado en JWT y aplicando un Middleware para analizar si el usuario puede entrar a un recurso, ya sea por que está autenticado para ello (auth), o tiene permisos dependiendo su rol (grant). Se ha jugado con distintas políticas dependiendo del recurso y se puede adaptar a las distintas necesidades del problema.
 
 ## EndPoints
 Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /api/vx/recurso, donde x es a versión de esta api, y recurso es el recurso a consumir, por ejemplo /api/v1/juegos.
@@ -54,12 +54,12 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 | POST | /juegos | auth | Añade el juego |
 | PUT | /juegos/id | auth | Modifica el juego con el id indicado si pertenece al usuario/a |
 | DELETE | /juegos/id | auth | Elimina el juego con el id indicado si pertenece al usuario/a |
-| GET| /files | Obtiene todos los ficheros |
-| GET | /files/id| Obtiene el fichero con el id indicado |
-| GET | /files/download/id| Descarga el fichero con el id indicado |
-| POST | /files| Añade el fichero |
-| PUT | /files/id| Modifica el fichero con el id indicado |
-| DELETE | /files/id| Elimina el fichero con el id indicado |
+| GET| /files | auth, grant('ADMIN') | Obtiene todos los ficheros. Solo Admin |
+| GET | /files/id | auth | Obtiene el fichero con el id indicado si pertenece al usuario/a |
+| GET | /files/download/id | -- | Descarga el fichero con el id indicado |
+| POST | /files | auth | Añade el fichero |
+| PUT | /files/id | auth | Modifica el fichero con el id indicado si pertenece al usuario/a |
+| DELETE | /files/id | auth | Elimina el fichero con el id indicado si pertenece al usuario/a |
 
 
 ## TDD: JEST
