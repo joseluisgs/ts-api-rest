@@ -30,7 +30,7 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
     req.user = payload.user;
     // Vamos a la siguiente ruta o función
     return next();
-    // Si casca
+    // Sihay error es porque no lo hemos podido recuperar o hay algo raro
   } catch (err) {
     return res.status(401).json({
       success: false,
