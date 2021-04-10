@@ -15,10 +15,6 @@ describe('Suite Test de Usuarios', () => {
   let tokenTest: string;
 
   afterAll(async () => {
-    // Borramos al usuario
-    const response = await request(servidor)
-      .delete(`/${Path}/${Version}/user/${userID}`);
-    expect(response.status).toBe(200);
     // Cerramos el servidor
     servidor.close();
   });

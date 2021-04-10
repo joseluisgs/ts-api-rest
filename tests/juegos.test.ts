@@ -47,7 +47,8 @@ describe('Suite Test de Juegos', () => {
   afterAll(async () => {
     // Borramos al usuario
     const response = await request(servidor)
-      .delete(`/${Path}/${Version}/user/${userTest.id}`);
+      .delete(`/${Path}/${Version}/user/${userTest.id}`)
+      .set({ Authorization: `Bearer ${tokenTest}` });
     expect(response.status).toBe(200);
     // Cerramos el servidor
     servidor.close();
@@ -95,7 +96,8 @@ describe('Suite Test de Juegos', () => {
       const token = `${tokenTest}123`;
       const response = await request(servidor)
         .post(`/${Path}/${Version}/${EndPoint}`)
-        .set({ Authorization: `Bearer ${token}` });
+        .set({ Authorization: `Bearer ${token}` })
+        .send({});
       expect(response.status).toBe(401);
       expect(response.body.mensaje).toContain('No autenticado o sesión ha expirado');
     });
@@ -170,7 +172,8 @@ describe('Suite Test de Juegos', () => {
       const ID = 'aaa';
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
-        .set({ Authorization: `Bearer ${tokenTest}` });
+        .set({ Authorization: `Bearer ${tokenTest}` })
+        .send({});
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
     });
@@ -179,7 +182,8 @@ describe('Suite Test de Juegos', () => {
       const token = `${tokenTest}123`;
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
-        .set({ Authorization: `Bearer ${token}` });
+        .set({ Authorization: `Bearer ${token}` })
+        .send({});
       expect(response.status).toBe(401);
       expect(response.body.mensaje).toContain('No autenticado o sesión ha expirado');
     });
