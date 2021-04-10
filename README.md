@@ -13,7 +13,7 @@ Ejemplo de un API REST realizada con TypeScript
   - [Autenticación y Autorización: JWT y Middleware](#autenticación-y-autorización-jwt-y-middleware)
   - [EndPoints](#endpoints)
   - [TDD: JEST](#tdd-jest)
-  - [Ejecición](#ejecición)
+  - [Ejecución](#ejecución)
   - [Despliegue](#despliegue)
     - [Docker](#docker)
     - [Docker Hub](#docker-hub)
@@ -65,7 +65,7 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 ## TDD: JEST
 Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo un enfoque TDD y Supertest para testear las peticiones HTTP a la API.
 
-## Ejecición
+## Ejecución
 Tareas que podemos ejecutar dentro de nuestra aplicación. Te recomiendo leer el fichero package.json:
 ```bash
 - npm install: para instalar las dependencias.
