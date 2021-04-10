@@ -1,5 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
+import env from '../env';
 import ListaUsers from '../mocks/users';
 import User from '../interfaces/user';
 
@@ -57,7 +59,7 @@ class UserController {
         id: Date.now().toString(),
         nombre: req.body.nombre,
         email: req.body.email,
-        password: req.body.password,
+        password: (req.body.password ? bcrypt.hashSync(req.body.password, env.BC_SALT) : ''),
         fecha: new Date(),
         role: req.body.role || 'USER',
       };
@@ -99,7 +101,7 @@ class UserController {
         id: data.id,
         nombre: req.body.nombre || data.nombre,
         email: req.body.email || data.nombre,
-        password: req.body.password || data.password,
+        password: (req.body.password ? bcrypt.hashSync(req.body.password, env.BC_SALT) : data.password),
         fecha: req.body.fecha || data.fecha,
         role: req.body.role || data.role,
       };
@@ -158,7 +160,7 @@ class UserController {
         });
       }
       const data = ListaUsers.find((user) => user.email === req.body.email);
-      if (!data || data.password !== req.body.password) {
+      if (!data || !bcrypt.compareSync(req.body.password, data.password)) {
         return res.status(403).json({
           success: false,
           mensaje: 'Usuario/a o contraseña incorrectos',
