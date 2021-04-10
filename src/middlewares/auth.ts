@@ -32,9 +32,9 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
     return next();
     // Si casca
   } catch (err) {
-    return res.status(401).send({
-      error: '401',
-      mensaje: 'La sesión ha caducado',
+    return res.status(401).json({
+      success: false,
+      mensaje: 'No autenticado o sesión ha expirado',
     });
   }
 };
@@ -52,8 +52,8 @@ const grant = (role = ['USER']) => (req: Request, res: Response, next: NextFunct
     next(); // pasamos a la siguiente...
   } else {
     // Si no tiene el rol...
-    return res.status(403).send({
-      error: '403',
+    return res.status(403).json({
+      success: false,
       mensaje: 'No Autorizado',
     });
   }
