@@ -68,7 +68,7 @@ class JuegosController {
         fecha: req.body.fecha || new Date(),
         activo: Boolean(req.body.activo) || false,
         imagen: req.body.imagen || undefined,
-        usuarioId: req.body.usuarioId || undefined,
+        usuarioId: req.body.usuarioId || req.user.id,
       };
       ListaJuegos.push(data);
       return res.status(201).json(data);
@@ -77,7 +77,6 @@ class JuegosController {
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),
-        data: null,
       });
     }
   }
@@ -90,6 +89,7 @@ class JuegosController {
    */
   public async update(req: Request, res: Response) {
     try {
+      // Existe
       const index = ListaJuegos.findIndex((juego) => juego.id === req.params.id);
       if (index === -1) {
         return res.status(404).json({
@@ -97,13 +97,22 @@ class JuegosController {
           mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
         });
       }
+      let data = ListaJuegos[index];
+      // Tenemos permiso
+      if (req.user.id !== data.usuarioId) {
+        return res.status(403).json({
+          success: false,
+          mensaje: 'No tienes permisos para realizar esta acción',
+        });
+      }
+      // Están todos los datos
       if (!checkBody(req)) {
         return res.status(422).json({
           success: false,
           mensaje: 'El título del juego es un campo obligatorio',
         });
       }
-      let data = ListaJuegos[index];
+      // Realizamos la acción
       data = {
         id: data.id,
         titulo: req.body.titulo,
@@ -121,7 +130,6 @@ class JuegosController {
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),
-        data: null,
       });
     }
   }
@@ -134,6 +142,7 @@ class JuegosController {
    */
   public async remove(req: Request, res: Response) {
     try {
+      // Existe
       const index = ListaJuegos.findIndex((juego) => juego.id === req.params.id);
       if (index === -1) {
         return res.status(404).json({
@@ -142,6 +151,14 @@ class JuegosController {
         });
       }
       const data = ListaJuegos[index];
+      // Tenemos permiso
+      if (req.user.id !== data.usuarioId) {
+        return res.status(403).json({
+          success: false,
+          mensaje: 'No tienes permisos para realizar esta acción',
+        });
+      }
+      // Realizamos la acción
       ListaJuegos.splice(index, 1);
       return res.status(200).json(data);
     } catch (err) {
@@ -149,7 +166,6 @@ class JuegosController {
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),
-        data: null,
       });
     }
   }
