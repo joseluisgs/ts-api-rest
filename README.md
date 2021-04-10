@@ -55,7 +55,7 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 | PUT | /juegos/id | auth | Modifica el juego con el id indicado si pertenece al usuario/a |
 | DELETE | /juegos/id | auth | Elimina el juego con el id indicado si pertenece al usuario/a |
 | GET| /files | auth, grant('ADMIN') | Obtiene todos los ficheros. Solo Admin |
-| GET | /files/id | auth | Obtiene el fichero con el id indicado si pertenece al usuario/a |
+| GET | /files/id | auth | Obtiene datos del fichero con el id indicado si pertenece al usuario/a |
 | GET | /files/download/id | -- | Descarga el fichero con el id indicado |
 | POST | /files | auth | Añade el fichero |
 | PUT | /files/id | auth | Modifica el fichero con el id indicado si pertenece al usuario/a |
