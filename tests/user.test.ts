@@ -83,9 +83,14 @@ describe('Suite Test de Usuarios', () => {
         .post(`/${Path}/${Version}/${EndPoint}/login`)
         .send(data);
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('id');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
+      expect(response.body).toHaveProperty('token');
+      expect(response.body).toHaveProperty('user');
+      expect(response.body.token).not.toHaveLength(0);
+      expect(response.body.user).toHaveProperty('id');
+      expect(response.body.user).toHaveProperty('email');
+      expect(response.body.user).toHaveProperty('role');
       // Para el resto de test
-      userID = response.body.id;
+      userID = response.body.user.id;
     });
 
     test(`NO Debería loguear un usuario, pues el campo es incorrecto /${Path}/${Version}/${EndPoint}/login`, async () => {

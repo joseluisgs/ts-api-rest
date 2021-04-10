@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jwt-simple';
 import env from '../env';
 import ListaUsers from '../mocks/users';
 import User from '../interfaces/user';
@@ -36,7 +37,6 @@ class UserController {
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),
-        data: null,
       });
     }
   }
@@ -140,7 +140,6 @@ class UserController {
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),
-        data: null,
       });
     }
   }
@@ -166,13 +165,26 @@ class UserController {
           mensaje: 'Usuario/a o contraseña incorrectos',
         });
       }
-      return res.status(200).json(data);
+      // Vamos a construir el token para enviarlo, copiamos los datos que nos interesan en un nuevo objeto, eliminando los anteriores
+      // https://nitayneeman.com/posts/object-rest-and-spread-properties-in-ecmascript-2018/
+      const {
+        password, fecha, ...user
+      } = data;
+      const payload = {
+        user,
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + (60 * env.TOKEN_LIFE), // 60 segundos * Minutos definidos
+      };
+      const token = jwt.encode(payload, env.TOKEN_SECRET);
+      return res.status(200).json({
+        user,
+        token,
+      });
     } catch (err) {
       console.log(err.toString());
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),
-        data: null,
       });
     }
   }

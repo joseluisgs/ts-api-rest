@@ -24,7 +24,7 @@ const env = {
   STORAGE: `${__dirname}/public/${process.env.FILES_PATH}/`,
   // TOKEN
   TOKEN_SECRET: process.env.TOKEN_SECRET || 'Este_Caballo_Viene_de_Boanzarrrrr_/_Lorem_Fistrum_Pecador_Te_Va_A_Haser_Pupitaa_Diodenaaalll_2021',
-  TOKEN_LIFE: process.env.TOKEN_LIFE || 20,
+  TOKEN_LIFE: Number(process.env.TOKEN_LIFE || 20),
   TOKEN_REFRESH: process.env.TOKEN_REFRESH || 40,
   // CIFRADO
   BC_SALT: Number(process.env.BC_SALT) || 10,

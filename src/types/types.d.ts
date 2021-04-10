@@ -5,5 +5,8 @@ declare global {
     interface Request {
       user: User
     }
+    interface Response {
+      user: User
+    }
   }
 }
