@@ -11,6 +11,7 @@ Ejemplo de un API REST realizada con TypeScript
   - [Sobre el proyecto](#sobre-el-proyecto)
   - [Arquitectura y diseño](#arquitectura-y-diseño)
   - [EndPoints](#endpoints)
+  - [Autenticación y Autorización: JWT y Middleware](#autenticación-y-autorización-jwt-y-middleware)
   - [TDD: JEST](#tdd-jest)
   - [Ejecición](#ejecición)
   - [Despliegue](#despliegue)
@@ -56,6 +57,9 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 | POST | /files| Añade el fichero |
 | PUT | /files/id| Modifica el fichero con el id indicado |
 | DELETE | /files/id| Elimina el fichero con el id indicado |
+
+## Autenticación y Autorización: JWT y Middleware
+Se ha implementado un sistema de atenticación y autorización basado en JWT y aplicando un Middleware para analizar si el usuario puede entrar a un recurso, ya sea por que está autenticado para ello, o tiene permisos dependiendo su rol.
 
 ## TDD: JEST
 Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo un enfoque TDD y Supertest para testear las peticiones HTTP a la API.
