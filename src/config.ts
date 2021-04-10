@@ -6,7 +6,6 @@
 // Librerías
 import express from 'express';
 import logger from 'morgan';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
 import env from './env';
@@ -24,8 +23,8 @@ export default (app: express.Express) => {
   }
 
   // Parseamos todos los peticiones POST y lo que nos llege a JSON
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
   // Indicamos los cors. Por si nos llega una peticion de una URL distintas
   // Nos permite configurar cabeceras y peticiones los que nos llegue
