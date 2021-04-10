@@ -92,7 +92,7 @@ Esta API se puede desplegar con Docker si te gusta ya sea a través de su Docker
 Disponible en: https://hub.docker.com/r/joseluisgs/ts-api-rest
 
 ## Prueba y consumo
-Puedes probar y consumir la API usando por ejemplo Postman y su [fichero](./TS-API-REST.postman_collection.json).
+Puedes probar y consumir la API usando por ejemplo Postman y su [fichero](./TS-API-REST.postman_collection.json).Deberás completar las llamadas que hagan uso de los tokens.
 
 ## Autor
 
