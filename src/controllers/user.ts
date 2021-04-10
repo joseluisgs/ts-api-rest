@@ -25,6 +25,7 @@ class UserController {
    */
   public async findById(req: Request, res: Response) {
     try {
+      // Existe
       const data = ListaUsers.find((user) => user.id === req.params.id);
       if (!data) {
         return res.status(404).json({
@@ -32,6 +33,14 @@ class UserController {
           mensaje: `No se ha encontrado ningún/a usuario/a con ID: ${req.params.id}`,
         });
       }
+      // Tenemos permiso
+      if (req.user.id !== data.id) {
+        return res.status(403).json({
+          success: false,
+          mensaje: 'No tienes permisos para realizar esta acción',
+        });
+      }
+      // Acción
       return res.status(200).json(data);
     } catch (err) {
       return res.status(500).json({
@@ -83,6 +92,7 @@ class UserController {
    */
   public async update(req: Request, res: Response) {
     try {
+      // Existe
       const index = ListaUsers.findIndex((user) => user.id === req.params.id);
       if (index === -1) {
         return res.status(404).json({
@@ -90,13 +100,22 @@ class UserController {
           mensaje: `No se ha encontrado ningún/a usuario/a con ID: ${req.params.id}`,
         });
       }
+      let data = ListaUsers[index];
+      // Tenemos permiso
+      if (req.user.id !== data.id) {
+        return res.status(403).json({
+          success: false,
+          mensaje: 'No tienes permisos para realizar esta acción',
+        });
+      }
+      // Todos los datos
       if (!checkBody(req)) {
         return res.status(422).json({
           success: false,
           mensaje: 'Faltan campos obligatorios como nombre, email o passowrd',
         });
       }
-      let data = ListaUsers[index];
+      // Accion
       data = {
         id: data.id,
         nombre: req.body.nombre || data.nombre,
@@ -125,6 +144,7 @@ class UserController {
    */
   public async remove(req: Request, res: Response) {
     try {
+      // Existe
       const index = ListaUsers.findIndex((user) => user.id === req.params.id);
       if (index === -1) {
         return res.status(404).json({
@@ -133,6 +153,14 @@ class UserController {
         });
       }
       const data = ListaUsers[index];
+      // Tenemos permiso
+      if (req.user.id !== data.id) {
+        return res.status(403).json({
+          success: false,
+          mensaje: 'No tienes permisos para realizar esta acción',
+        });
+      }
+      // Accion
       ListaUsers.splice(index, 1);
       return res.status(200).json(data);
     } catch (err) {

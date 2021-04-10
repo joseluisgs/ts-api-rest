@@ -37,7 +37,7 @@ El Modelo es la estructuración de los datos a tratar.
 En todo momento se ofrece información de la petición en base a los códigos de estado HTTP.
 
 ## Autenticación y Autorización: JWT y Middleware
-Se ha implementado un sistema de atenticación y autorización basado en JWT y aplicando un Middleware para analizar si el usuario puede entrar a un recurso, ya sea por que está autenticado para ello, o tiene permisos dependiendo su rol.
+Se ha implementado un sistema de atenticación y autorización basado en JWT y aplicando un Middleware para analizar si el usuario puede entrar a un recurso, ya sea por que está autenticado para ello (auth), o tiene permisos dependiendo su rol (grant).
 
 ## EndPoints
 Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /api/vx/recurso, donde x es a versión de esta api, y recurso es el recurso a consumir, por ejemplo /api/v1/juegos.
@@ -46,9 +46,9 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 | -- | -- | -- | -- |
 | POST| user/register | -- | Registra un usuario/a |
 | POST| user/login | -- | Se indentifica en el sistema y obtiene token de acceso |
-| GET| /user/id | Obtiene los datos del usuario/a con id indicado |
-| PUT| /user/id | Modifica los datos del usuario/a con id indicado |
-| DELETE| /user/id | Elimina el usuario/a con id indicado |
+| GET| /user/id | auth | Obtiene los datos del usuario/a con id indicado si pertenece a él/ella |
+| PUT| /user/id | auth | Modifica los datos del usuario/a con id indicado si pertenecen a él/ella |
+| DELETE| /user/id | auth | Elimina el usuario/a con id indicado si pertenecen a él/ella |
 | GET| /juegos | -- | Obtiene todos las juegos |
 | GET | /juegos/id | -- | Obtiene el juego con el id indicado |
 | POST | /juegos | auth | Añade el juego |

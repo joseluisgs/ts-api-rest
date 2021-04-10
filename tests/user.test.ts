@@ -12,8 +12,14 @@ describe('Suite Test de Usuarios', () => {
   const Version = 'v1';
   const EndPoint = 'user';
   let userID: string;
+  let tokenTest: string;
 
   afterAll(async () => {
+    // Borramos al usuario
+    const response = await request(servidor)
+      .delete(`/${Path}/${Version}/user/${userID}`);
+    expect(response.status).toBe(200);
+    // Cerramos el servidor
     servidor.close();
   });
 
@@ -49,24 +55,6 @@ describe('Suite Test de Usuarios', () => {
     });
   });
 
-  describe('Suite Test de GET BY ID', () => {
-    test(`Debería obetener un usuario con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}/${userID}`);
-      expect(response.status).toBe(200);
-      const item:User = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-      expect(item.id).toBe(userID);
-    });
-
-    test(`NO Debería obetener un usuario con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
-      const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}/${ID}`);
-      expect(response.status).toBe(404);
-      expect(response.body.mensaje).toContain('No se ha encontrado ningún/a usuario/a con ID');
-    });
-  });
-
   describe('Suite Test de Login', () => {
     test(`Debería loguearse un usuario con los datos indicados /${Path}/${Version}/${EndPoint}/login`, async () => {
       const data = {
@@ -85,6 +73,7 @@ describe('Suite Test de Usuarios', () => {
       expect(response.body.user).toHaveProperty('role');
       // Para el resto de test
       userID = response.body.user.id;
+      tokenTest = response.body.token;
     });
 
     test(`NO Debería loguear un usuario, pues el campo es incorrecto /${Path}/${Version}/${EndPoint}/login`, async () => {
@@ -100,6 +89,35 @@ describe('Suite Test de Usuarios', () => {
     });
   });
 
+  describe('Suite Test de GET BY ID', () => {
+    test(`Debería obetener un usuario con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}/${userID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` });
+      expect(response.status).toBe(200);
+      const item:User = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
+      expect(item.id).toBe(userID);
+    });
+
+    test(`NO Debería obetener un usuario con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const ID = 'aaa';
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` });
+      expect(response.status).toBe(404);
+      expect(response.body.mensaje).toContain('No se ha encontrado ningún/a usuario/a con ID');
+    });
+
+    test(`NO Debería obetener un usuario token invalido /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const token = `${tokenTest}123`;
+      const response = await request(servidor)
+        .get(`/${Path}/${Version}/${EndPoint}/${userID}`)
+        .set({ Authorization: `Bearer ${token}` });
+      expect(response.status).toBe(401);
+      expect(response.body.mensaje).toContain('No autenticado o sesión ha expirado');
+    });
+  });
+
   describe('Suite Test de PUT', () => {
     test(`Debería modificar un fichero con los datos indicados /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const data: User = {
@@ -110,6 +128,7 @@ describe('Suite Test de Usuarios', () => {
       };
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${userID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
       expect(response.status).toBe(200);
       const item:User = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
@@ -126,6 +145,7 @@ describe('Suite Test de Usuarios', () => {
       };
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún/a usuario/a con ID');
@@ -140,16 +160,36 @@ describe('Suite Test de Usuarios', () => {
       };
       const response = await request(servidor)
         .put(`/${Path}/${Version}/${EndPoint}/${userID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
       expect(response.status).toBe(422);
       expect(response.body.mensaje).toContain('Faltan campos obligatorios como nombre, email o passowrd');
     });
+
+    test(`NO Debería actualizar un usuario token invalido /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const token = `${tokenTest}123`;
+      const response = await request(servidor)
+        .put(`/${Path}/${Version}/${EndPoint}/${userID}`)
+        .set({ Authorization: `Bearer ${token}` });
+      expect(response.status).toBe(401);
+      expect(response.body.mensaje).toContain('No autenticado o sesión ha expirado');
+    });
   });
 
   describe('Suite Test de DELETE', () => {
+    test(`NO Debería eliminar un usuario token invalido /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const token = `${tokenTest}123`;
+      const response = await request(servidor)
+        .delete(`/${Path}/${Version}/${EndPoint}/${userID}`)
+        .set({ Authorization: `Bearer ${token}` });
+      expect(response.status).toBe(401);
+      expect(response.body.mensaje).toContain('No autenticado o sesión ha expirado');
+    });
+
     test(`Debería eliminar un fichero dado su ID /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const response = await request(servidor)
-        .delete(`/${Path}/${Version}/${EndPoint}/${userID}`);
+        .delete(`/${Path}/${Version}/${EndPoint}/${userID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
       const item:File = response.body;
       expect(item).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
@@ -158,7 +198,8 @@ describe('Suite Test de Usuarios', () => {
     test(`NO Debería eliminar un usuario pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = 'aaa';
       const response = await request(servidor)
-        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`);
+        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún/a usuario/a con ID');
     });

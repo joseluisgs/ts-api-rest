@@ -5,24 +5,25 @@
 // Cargamos librerías, podemos usar la sitaxis EM6: import { Router } from 'express';
 import express from 'express';
 import userController from '../controllers/user';
+import { auth } from '../middlewares/auth';
+
+// Middleware
+//  auth, grant(['ADMIN']), si no se pone gran, es porque es que esta implícito role(['user'])
 
 // Cargamos el enrutador
 const userRouter = express.Router();
 
-// Esta ruta está protegida en todos los elementos:
-// - Autenticados
+// GET Obtiene un elemento por por ID: Solo autenticado
+userRouter.get('/:id', auth, userController.findById);
 
-// GET Obtiene un elemento por por ID
-userRouter.get('/:id', userController.findById);
-
-// POST Añadir Elemento.
+// POST Añadir Elemento. Solo autenticado
 userRouter.post('/register', userController.add);
 
-// PUT Modifica un elemento por ID.
-userRouter.put('/:id', userController.update);
+// PUT Modifica un elemento por ID. Solo autenticado
+userRouter.put('/:id', auth, userController.update);
 
-// DELETE Elimina un elemento por ID.
-userRouter.delete('/:id', userController.remove);
+// DELETE Elimina un elemento por ID. Solo autenticado
+userRouter.delete('/:id', auth, userController.remove);
 
 // POST Descarga un fichero dado su ID
 userRouter.post('/login', userController.login);
