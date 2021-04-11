@@ -7,6 +7,7 @@
 import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
+import helmet from 'helmet';
 import fileUpload from 'express-fileupload';
 import env from './env';
 
@@ -30,6 +31,9 @@ export default (app: express.Express) => {
   // Nos permite configurar cabeceras y peticiones los que nos llegue
   app.use(cors());
   // app.use(cors({ origin: true }));
+
+  // Aplicamos Helmet
+  app.use(helmet());
 
   // Configuramos el sistema de ficheros de subida
   app.use(fileUpload(
