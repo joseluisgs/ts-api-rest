@@ -29,7 +29,7 @@ class Database {
     const host = `${env.DB_PROTOCOL}://${env.DB_USER}:${env.DB_PASS}@${env.DB_URL}:${env.DB_PORT}/${env.DB_NAME}?authSource=admin&retryWrites=true&w=majority`;
 
     // Definimos una promesa que se resollverá si nos conecatmos correctamente
-    return new Promise((resolve) => {
+    return new Promise<mongoose.Connection>((resolve) => {
       // Configuramos el la conexión del cliente Mongo
       const options = {
         poolSize: env.DB_POOLSIZE,
