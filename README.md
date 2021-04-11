@@ -1,7 +1,8 @@
 # TypeScrip API REST
 Ejemplo de un API REST realizada con TypeScript
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178c6)](https://www.typescriptlang.org/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ed)](https://www.docker.com/)
 [![NodeJS](https://img.shields.io/badge/NodeJS-Ready-83BA63)](https://nodejs.org/es/)
 [![JS Style](https://img.shields.io/badge/JS%20Style-AirBnB-ff69b4)](https://airbnb.io/javascript)
 [![Licence](https://img.shields.io/github/license/joseluisgs/todo-native-script)](./LICENSE)
@@ -10,6 +11,7 @@ Ejemplo de un API REST realizada con TypeScript
 - [TypeScrip API REST](#typescrip-api-rest)
   - [Sobre el proyecto](#sobre-el-proyecto)
   - [Arquitectura y diseño](#arquitectura-y-diseño)
+  - [Modos de funcionamiento](#modos-de-funcionamiento)
   - [Autenticación y Autorización: JWT y Middleware](#autenticación-y-autorización-jwt-y-middleware)
   - [EndPoints](#endpoints)
   - [TDD: JEST](#tdd-jest)
@@ -36,6 +38,11 @@ El Controlador realiza el método indicado según la ruta consultando los modelo
 El Modelo es la estructuración de los datos a tratar.
 
 En todo momento se ofrece información de la petición en base a los códigos de estado HTTP.
+
+## Modos de funcionamiento
+Este proyecto está basado en dos modos de funcionamiento. 
+- Memoria: Usando almacenamiento en memoria. Lo tienes en la rama Memoria.
+- MogoDB: Usando almacenamiento en MogoDB. Lo tienes en la rama MongoDB.
 
 ## Autenticación y Autorización: JWT y Middleware
 Se ha implementado un sistema de atenticación y autorización basado en JWT y aplicando un Middleware para analizar si el usuario puede entrar a un recurso, ya sea por que está autenticado para ello (auth), o tiene permisos dependiendo su rol (grant). Se ha jugado con distintas políticas dependiendo del recurso y se puede adaptar a las distintas necesidades del problema.
