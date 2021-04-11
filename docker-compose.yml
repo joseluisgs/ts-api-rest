@@ -15,7 +15,7 @@ services:
       - api-data:/app/build/public
     networks:
       - api-network
-    restart: always
+    # restart: always
 
 
 # Mi volumenes de datos compartidos
