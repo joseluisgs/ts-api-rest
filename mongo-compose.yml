@@ -1,0 +1,40 @@
+# Indicamos la versión
+version: '3.7'
+
+# Mis servicios
+services:
+  mongodb-server:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secret
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mongo-network
+ 
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    networks:
+      - mongo-network
+    depends_on:
+      - mongodb-server
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
+      ME_CONFIG_MONGODB_SERVER: mongodb-server
+
+# Mis volumenes
+volumes:
+  mongo-data:
+
+# Si queremos que tengan una red propia a otros contenedores
+networks:
+  mongo-network:
+    driver: bridge

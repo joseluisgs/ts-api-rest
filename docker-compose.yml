@@ -12,7 +12,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - api-vol:/app/build/public
+      - api-data:/app/build/public
     networks:
       - api-network
     restart: always
@@ -20,7 +20,7 @@ services:
 
 # Mi volumenes de datos compartidos
 volumes:
-  api-vol:
+  api-data:
 
 # Si queremos que tengan una red propia a otros contenedores
 networks:
