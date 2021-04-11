@@ -16,6 +16,7 @@ Ejemplo de un API REST realizada con TypeScript
   - [Ejecución](#ejecución)
   - [Despliegue](#despliegue)
     - [Docker](#docker)
+    - [Docker Compose](#docker-compose)
     - [Docker Hub](#docker-hub)
   - [Prueba y consumo](#prueba-y-consumo)
   - [Autor](#autor)
@@ -82,12 +83,17 @@ Tareas que podemos ejecutar dentro de nuestra aplicación. Te recomiendo leer el
 
 ## Despliegue
 ### Docker
-
 Esta API se puede desplegar con Docker si te gusta ya sea a través de su Dockerfile o a otraves de Docker Hub, para ello:
 ```bash
 - docker build -t joseluisgs/joseluisgs/ts-api-rest .
 - docker run -it -p 8000:8000 --rm --name ts-api-rest-1 joseluisgs/ts-api-rest
 ```
+### Docker Compose
+Se ha optimizado el uso de contenedores usando Docker Compose. De hecho el almacenamiento se ha implementado en un contenedor de tipo Volumen.
+```bash
+- docker-compose up -d
+```
+
 ### Docker Hub
 Disponible en: https://hub.docker.com/r/joseluisgs/ts-api-rest
 

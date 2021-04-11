@@ -1,0 +1,28 @@
+# Indicamos la versión
+version: '3.7'
+
+# Mis servicios
+# Iniciamos los servicios
+services:
+  # API REST TS
+  ts-api-rest:
+    container_name: ts-api-rest
+    # image: "joseluisgs/ts-api-rest"
+    build: .
+    ports:
+      - 8000:8000
+    volumes:
+      - api-vol:/app/build/public
+    networks:
+      - api-network
+    restart: always
+
+
+# Mi volumenes de datos compartidos
+volumes:
+  api-vol:
+
+# Si queremos que tengan una red propia a otros contenedores
+networks:
+  api-network:
+    driver: bridge
