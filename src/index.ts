@@ -2,9 +2,11 @@ import express from 'express';
 import http from 'http';
 import chalk from 'chalk';
 import { AddressInfo } from 'node:net';
+import mongoose from 'mongoose';
 import env from './env';
 import config from './config';
 import router from './router';
+import db from './database';
 
 /**
  * Clase servidor de la API REST
@@ -12,7 +14,9 @@ import router from './router';
 class Server {
   private app: express.Express;
 
-  private instancia: http.Server;
+  private instancia!: http.Server;
+
+  private mongoDB!: mongoose.Connection;
 
   /**
    * Constructor
@@ -20,14 +24,16 @@ class Server {
   constructor() {
     // Cargamos express como servidor
     this.app = express();
-    this.instancia = http.createServer();
   }
 
   /**
    * Inicia el Servidor
    * @returns instancia del servidor http Server
    */
-  start() {
+  async start() {
+    // No arrancamos hasta qye MongoDB esté lista
+    this.mongoDB = await db.connect();
+
     // Le apliacamos la configuracion a nuestro Servidor
     config(this.app);
 
@@ -50,6 +56,8 @@ class Server {
    * Cierra el Servidor
    */
   close() {
+    // Desconectamos MongoDB
+    this.mongoDB.close();
     // Desconectamos el socket server
     this.instancia.close();
     if (process.env.NODE_ENV !== 'test') {
@@ -62,11 +70,13 @@ class Server {
  * Devuelve la instancia de conexión siempre la misma, singleton
  */
 const server = new Server();
-
 // Exportamos el servidor inicializado
-export default server.start();
+export default server;
 
 // Si ningun fichero está haciendo un import y ejecutando ya el servidor, lo lanzamos nosotros
+if (!module.parent) {
+  server.start();
+}
 
 process.on('unhandledRejection', (err) => {
   console.log(chalk.red('❌ Custom Error: An unhandledRejection occurred'));

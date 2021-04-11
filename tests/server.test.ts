@@ -1,6 +1,7 @@
 import { AddressInfo } from 'node:net';
 import request from 'supertest';
-import servidor from '../src';
+import http from 'http';
+import server from '../src';
 import env from '../src/env';
 
 process.env.NODE_ENV = 'test';
@@ -11,9 +12,15 @@ process.env.NODE_ENV = 'test';
 describe('Suite Test de Servidor', () => {
   const Path = 'api';
   const Version = 'v1';
+  let servidor: http.Server;
+
+  beforeAll(async () => {
+    servidor = await server.start();
+  });
 
   afterAll(async () => {
     servidor.close();
+    server.close();
   });
 
   test('Debería iniciarse el servidor, no es nulo', () => {
