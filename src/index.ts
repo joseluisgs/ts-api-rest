@@ -73,8 +73,9 @@ const server = new Server();
 // Exportamos el servidor inicializado
 export default server;
 
-// Si ningun fichero está haciendo un import y ejecutando ya el servidor, lo lanzamos nosotros
-if (!module.parent) {
+// La siguiente sección de código sólo se ejecutará si este fichero es el punto de entrada
+// https://nodejs.org/api/deprecations.html#DEP0144
+if (require.main === module) {
   server.start();
 }
 
