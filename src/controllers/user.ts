@@ -73,7 +73,11 @@ class UserController {
         role: req.body.role.toUpperCase() || 'USER',
       };
       ListaUsers.push(data);
-      return res.status(201).json(data);
+      // Devolvemos todo menos el password
+      const {
+        password, ...user
+      } = data;
+      return res.status(201).json(user);
     } catch (err) {
       console.log(err.toString());
       return res.status(500).json({
@@ -125,7 +129,11 @@ class UserController {
         role: req.body.role.toUpperCase() || data.role,
       };
       ListaUsers[index] = data;
-      return res.status(200).json(data);
+      // devolvemos todos menos el password
+      const {
+        password, ...user
+      } = data;
+      return res.status(200).json(user);
     } catch (err) {
       console.log(err.toString());
       return res.status(500).json({
@@ -162,7 +170,10 @@ class UserController {
       }
       // Accion
       ListaUsers.splice(index, 1);
-      return res.status(200).json(data);
+      const {
+        password, ...user
+      } = data;
+      return res.status(200).json(user);
     } catch (err) {
       console.log(err.toString());
       return res.status(500).json({
