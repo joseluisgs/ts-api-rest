@@ -73,7 +73,8 @@ const server = new Server();
 // Exportamos el servidor inicializado
 export default server;
 
-// La siguiente sección de código sólo se ejecutará si este fichero es el punto de entrada
+// La siguiente sección de código sólo se ejecutará si este fichero es el punto de entrada del programa principal
+// Lo hacemos porque también lo llamamos en test.
 // https://nodejs.org/api/deprecations.html#DEP0144
 if (require.main === module) {
   server.start();
