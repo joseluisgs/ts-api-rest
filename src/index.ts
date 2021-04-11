@@ -14,7 +14,7 @@ import db from './database';
 class Server {
   private app: express.Express;
 
-  private instancia!: http.Server;
+  private servicio!: http.Server;
 
   private mongoDB!: mongoose.Connection;
 
@@ -41,25 +41,25 @@ class Server {
     router(this.app);
 
     // Nos ponemos a escuchar a un puerto definido en la configuracion
-    this.instancia = this.app.listen(env.PORT, () => {
-      const address = this.instancia.address() as AddressInfo;
+    this.servicio = this.app.listen(env.PORT, () => {
+      const address = this.servicio.address() as AddressInfo;
       const host = address.address === '::' ? 'localhost' : address.address; // dependiendo de la dirección asi configuramos
       const { port } = address; // el puerto
       if (process.env.NODE_ENV !== 'test') {
         console.log(chalk.green(`🟢 Servidor API REST escuchando ✅ -> http://${host}:${port}`));
       }
     });
-    return this.instancia; // Devolvemos la instancia del servidor
+    return this.servicio; // Devolvemos la instancia del servidor
   }
 
   /**
-   * Cierra el Servidor
+   * Cierra el Servidor y con ello también nos desconectamos de los servicios que tengamos como MongoDB
    */
-  close() {
+  async close() {
     // Desconectamos MongoDB
-    this.mongoDB.close();
+    await this.mongoDB.close();
     // Desconectamos el socket server
-    this.instancia.close();
+    this.servicio.close();
     if (process.env.NODE_ENV !== 'test') {
       console.log(chalk.grey('⚪️ Servidor parado ❎'));
     }

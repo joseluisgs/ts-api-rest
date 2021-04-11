@@ -1,5 +1,6 @@
 import request from 'supertest';
-import servidor from '../src';
+import http from 'http';
+import server from '../src';
 import User from '../src/interfaces/user';
 
 process.env.NODE_ENV = 'test';
@@ -8,15 +9,19 @@ process.env.NODE_ENV = 'test';
  * TEST: USER
  */
 describe('Suite Test de Usuarios', () => {
+  let servicio: http.Server;
   const Path = 'api';
   const Version = 'v1';
   const EndPoint = 'user';
   let userID: string;
   let tokenTest: string;
 
+  beforeAll(async () => {
+    servicio = await server.start();
+  });
   afterAll(async () => {
-    // Cerramos el servidor
-    servidor.close();
+    // Cerramos el servicio
+    server.close();
   });
 
   describe('Suite Test de POST', () => {
@@ -27,7 +32,7 @@ describe('Suite Test de Usuarios', () => {
         password: 'test123',
         role: 'USER',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}/register`)
         .send(data);
       expect(response.status).toBe(201);
@@ -43,7 +48,7 @@ describe('Suite Test de Usuarios', () => {
         password: '',
         role: 'USER',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}/register`)
         .send(data);
       expect(response.status).toBe(422);
@@ -57,7 +62,7 @@ describe('Suite Test de Usuarios', () => {
         email: 'test@test.com',
         password: 'test123',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}/login`)
         .send(data);
       expect(response.status).toBe(200);
@@ -77,7 +82,7 @@ describe('Suite Test de Usuarios', () => {
         email: 'test1@test1.com',
         password: 'test1234',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}/login`)
         .send(data);
       expect(response.status).toBe(403);
@@ -87,7 +92,7 @@ describe('Suite Test de Usuarios', () => {
 
   describe('Suite Test de GET BY ID', () => {
     test(`Debería obetener un usuario con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}/${userID}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
@@ -97,7 +102,7 @@ describe('Suite Test de Usuarios', () => {
 
     test(`NO Debería obetener un usuario con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = 'aaa';
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}/${ID}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
@@ -106,7 +111,7 @@ describe('Suite Test de Usuarios', () => {
 
     test(`NO Debería obetener un usuario token invalido /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}/${userID}`)
         .set({ Authorization: `Bearer ${token}` });
       expect(response.status).toBe(401);
@@ -122,7 +127,7 @@ describe('Suite Test de Usuarios', () => {
         password: 'test123',
         role: 'USER',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${userID}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
@@ -139,7 +144,7 @@ describe('Suite Test de Usuarios', () => {
         password: 'test123',
         role: 'USER',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
@@ -154,7 +159,7 @@ describe('Suite Test de Usuarios', () => {
         password: '',
         role: 'USER',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${userID}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
@@ -164,7 +169,7 @@ describe('Suite Test de Usuarios', () => {
 
     test(`NO Debería actualizar un usuario token invalido /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${userID}`)
         .set({ Authorization: `Bearer ${token}` });
       expect(response.status).toBe(401);
@@ -175,7 +180,7 @@ describe('Suite Test de Usuarios', () => {
   describe('Suite Test de DELETE', () => {
     test(`NO Debería eliminar un usuario token invalido /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .delete(`/${Path}/${Version}/${EndPoint}/${userID}`)
         .set({ Authorization: `Bearer ${token}` });
       expect(response.status).toBe(401);
@@ -183,7 +188,7 @@ describe('Suite Test de Usuarios', () => {
     });
 
     test(`Debería eliminar un fichero dado su ID /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .delete(`/${Path}/${Version}/${EndPoint}/${userID}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
@@ -193,7 +198,7 @@ describe('Suite Test de Usuarios', () => {
 
     test(`NO Debería eliminar un usuario pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = 'aaa';
-      const response = await request(servidor)
+      const response = await request(servicio)
         .delete(`/${Path}/${Version}/${EndPoint}/${ID}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);

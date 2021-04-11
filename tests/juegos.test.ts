@@ -1,5 +1,6 @@
 import request from 'supertest';
-import servidor from '../src';
+import http from 'http';
+import server from '../src';
 import Juego from '../src/interfaces/juego';
 import User from '../src/interfaces/user';
 
@@ -9,6 +10,7 @@ process.env.NODE_ENV = 'test';
  * TEST: JUEGOS
  */
 describe('Suite Test de Juegos', () => {
+  let servicio: http.Server;
   const Path = 'api';
   const Version = 'v1';
   const EndPoint = 'juegos';
@@ -22,8 +24,9 @@ describe('Suite Test de Juegos', () => {
   let tokenTest: string;
 
   beforeAll(async () => {
+    servicio = await server.start();
     // insertamos al usuario de prueba
-    let response = await request(servidor)
+    let response = await request(servicio)
       .post(`/${Path}/${Version}/user/register`)
       .send(userTest);
     expect(response.status).toBe(201);
@@ -33,7 +36,7 @@ describe('Suite Test de Juegos', () => {
       email: userTest.email,
       password: userTest.password,
     };
-    response = await request(servidor)
+    response = await request(servicio)
       .post(`/${Path}/${Version}/user/login`)
       .send(data);
     expect(response.status).toBe(200);
@@ -46,12 +49,12 @@ describe('Suite Test de Juegos', () => {
 
   afterAll(async () => {
     // Borramos al usuario
-    const response = await request(servidor)
+    const response = await request(servicio)
       .delete(`/${Path}/${Version}/user/${userTest.id}`)
       .set({ Authorization: `Bearer ${tokenTest}` });
     expect(response.status).toBe(200);
-    // Cerramos el servidor
-    servidor.close();
+    // Cerramos el servicio
+    server.close();
   });
 
   describe('Suite Test de POST', () => {
@@ -63,7 +66,7 @@ describe('Suite Test de Juegos', () => {
         imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
         usuarioId: userTest.id || '',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
@@ -84,7 +87,7 @@ describe('Suite Test de Juegos', () => {
         imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
         usuarioId: '111',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
@@ -94,7 +97,7 @@ describe('Suite Test de Juegos', () => {
 
     test(`NO Debería añadir un juego token invalido /${Path}/${Version}/${EndPoint}`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}`)
         .set({ Authorization: `Bearer ${token}` })
         .send({});
@@ -105,7 +108,7 @@ describe('Suite Test de Juegos', () => {
 
   describe('Suite Test de GET ALL', () => {
     test(`Debería obetener el metodo GET ALL /${Path}/${Version}/${EndPoint}`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}`);
       expect(response.status).toBe(200);
       const listaItems: Juego[] = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
@@ -115,7 +118,7 @@ describe('Suite Test de Juegos', () => {
 
   describe('Suite Test de GET BY ID', () => {
     test(`Debería obetener un juego con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}/${juegoID}`);
       expect(response.status).toBe(200);
       const item:Juego = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
@@ -124,7 +127,7 @@ describe('Suite Test de Juegos', () => {
 
     test(`NO Debería obetener un juego con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = 'aaa';
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}/${ID}`);
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
@@ -139,7 +142,7 @@ describe('Suite Test de Juegos', () => {
         plataforma: 'Nintendo Switch',
         imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
@@ -160,7 +163,7 @@ describe('Suite Test de Juegos', () => {
         imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
         usuarioId: '111',
       };
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
@@ -170,7 +173,7 @@ describe('Suite Test de Juegos', () => {
 
     test(`NO Debería modificar un juego pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = 'aaa';
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .send({});
@@ -180,7 +183,7 @@ describe('Suite Test de Juegos', () => {
 
     test(`NO Debería modificar un juego token invalido /${Path}/${Version}/${EndPoint}`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
         .set({ Authorization: `Bearer ${token}` })
         .send({});
@@ -192,7 +195,7 @@ describe('Suite Test de Juegos', () => {
   describe('Suite Test de DELETE', () => {
     test(`NO Debería eliminar un juego token invalido /${Path}/${Version}/${EndPoint}`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .delete(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
         .set({ Authorization: `Bearer ${token}` });
       expect(response.status).toBe(401);
@@ -200,7 +203,7 @@ describe('Suite Test de Juegos', () => {
     });
 
     test(`Debería eliminar un juego dado su ID /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .delete(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
@@ -211,7 +214,7 @@ describe('Suite Test de Juegos', () => {
 
     test(`NO Debería eliminar un juego pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const ID = 'aaa';
-      const response = await request(servidor)
+      const response = await request(servicio)
         .delete(`/${Path}/${Version}/${EndPoint}/${ID}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
