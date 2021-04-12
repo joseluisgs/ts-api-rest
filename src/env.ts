@@ -41,7 +41,7 @@ const env = {
   BC_SALT: Number(process.env.BC_SALT) || 10,
 
   // MONGODB
-  DB_DEBUG: process.env.DB_DEBUG || '', // puede ser true
+  DB_DEBUG: process.env.DB_DEBUG || 'false', // puede ser true
   DB_POOLSIZE: Number(process.env.DB_POOLSIZE) || 200,
   DB_PROTOCOL: process.env.DB_PROTOCOL || 'mongodb',
   DB_USER: process.env.DB_USER || '',

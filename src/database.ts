@@ -38,8 +38,10 @@ class Database {
         useCreateIndex: true,
         // useFindAndModify: false, // si no salta las funciones deprecated
       };
-
-      mongoose.set('debug', env.DB_DEBUG); // activamos  el modo depurador si así lo tenemos en nuestro fichero
+      // activamos  el modo depurador si así lo tenemos en nuestro fichero, solo si no estamos en test
+      if (env.NODE_ENV !== 'test') {
+        mongoose.set('debug', env.DB_DEBUG);
+      }
       mongoose.Promise = global.Promise;
 
       // Creamos la cenexión

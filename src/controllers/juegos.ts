@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable class-methods-use-this */
+
 import { Request, Response } from 'express';
-import ListaJuegos from '../mocks/juegos';
-import Juego from '../interfaces/juego';
+import JuegoBD from '../models/juego';
 
 // Comprueba que la entrada es correcta de datos. Es auxiliar
 const checkBody = (req: Request) => req.body.titulo && req.body.titulo.trim().length > 0;
@@ -9,6 +11,13 @@ const checkBody = (req: Request) => req.body.titulo && req.body.titulo.trim().le
 /**
  * CONTROLADOR DE JUEGOS
  */
+
+const toJSON = (item: any) => {
+  // Del objeto MongoDB, renombro la propiedad, quito la v y me quedo con el resto
+  const { _id: id, __v, ...rest } = item.toObject();
+  // construto un nuevo objeto
+  return { id, ...rest };
+};
 
 class JuegosController {
   /**
@@ -18,7 +27,16 @@ class JuegosController {
    * @returns 200 si OK y lista JSON
    */
   public async findAll(req: Request, res: Response) {
-    return res.status(200).json(ListaJuegos);
+    try {
+      const data = await JuegoBD().find();
+      // Maquillamos el JSON para quitar los campos de MongoDB no nos interesen
+      return res.status(200).json(data.map(toJSON));
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        mensaje: err.toString(),
+      });
+    }
   }
 
   /**
@@ -29,19 +47,18 @@ class JuegosController {
    */
   public async findById(req: Request, res: Response) {
     try {
-      const data = ListaJuegos.find((juego) => juego.id === req.params.id);
+      const data = await JuegoBD().findById(req.params.id);
       if (!data) {
         return res.status(404).json({
           success: false,
           mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
         });
       }
-      return res.status(200).json(data);
+      return res.status(200).json(toJSON(data));
     } catch (err) {
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),
-        data: null,
       });
     }
   }
@@ -60,8 +77,7 @@ class JuegosController {
           mensaje: 'El título del juego es un campo obligatorio',
         });
       }
-      const data: Juego = {
-        id: Date.now().toString(),
+      const newData = new (JuegoBD())({
         titulo: req.body.titulo,
         descripcion: req.body.descripcion || undefined,
         plataforma: req.body.plataforma || undefined,
@@ -69,9 +85,9 @@ class JuegosController {
         activo: Boolean(req.body.activo) || false,
         imagen: req.body.imagen || undefined,
         usuarioId: req.body.usuarioId || req.user.id,
-      };
-      ListaJuegos.push(data);
-      return res.status(201).json(data);
+      });
+      const data = await newData.save();
+      return res.status(201).json(toJSON(data));
     } catch (err) {
       console.log(err.toString());
       return res.status(500).json({
@@ -89,22 +105,6 @@ class JuegosController {
    */
   public async update(req: Request, res: Response) {
     try {
-      // Existe
-      const index = ListaJuegos.findIndex((juego) => juego.id === req.params.id);
-      if (index === -1) {
-        return res.status(404).json({
-          success: false,
-          mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
-        });
-      }
-      let data = ListaJuegos[index];
-      // Tenemos permiso
-      if (req.user.id !== data.usuarioId) {
-        return res.status(403).json({
-          success: false,
-          mensaje: 'No tienes permisos para realizar esta acción',
-        });
-      }
       // Están todos los datos
       if (!checkBody(req)) {
         return res.status(422).json({
@@ -112,21 +112,37 @@ class JuegosController {
           mensaje: 'El título del juego es un campo obligatorio',
         });
       }
+      // Tenemos permiso
+      // Lo de existe no los podíamos ahorrar ya que findOneAndUpdate te puede dar dicho error
+      // Pero lo hacemos porque hemos dicho que no podemos modificarlo si no es nuestro, por eso necesitamos este valor
+      // Si no este if podría ir abajo de dicha función para analizar su resultado
+      let data = await JuegoBD().findById(req.params.id);
+      if (!data) {
+        return res.status(404).json({
+          success: false,
+          mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
+        });
+      }
+      const valor: any = data;
+      if (req.user.id !== valor!.usuarioId) {
+        return res.status(403).json({
+          success: false,
+          mensaje: 'No tienes permisos para realizar esta acción',
+        });
+      }
       // Realizamos la acción
-      data = {
-        id: data.id,
+      const newData = {
         titulo: req.body.titulo,
-        descripcion: req.body.descripcion || data.descripcion,
-        plataforma: req.body.plataforma || data.plataforma,
-        fecha: req.body.fecha || data.fecha,
-        activo: Boolean(req.body.activo) || data.activo,
-        imagen: req.body.imagen || data.imagen,
-        usuarioId: data.usuarioId,
+        descripcion: req.body.descripcion || undefined,
+        plataforma: req.body.plataforma || undefined,
+        fecha: req.body.fecha || new Date(),
+        activo: Boolean(req.body.activo) || false,
+        imagen: req.body.imagen || undefined,
+        usuarioId: req.body.usuarioId || req.user.id,
       };
-      ListaJuegos[index] = data;
-      return res.status(200).json(data);
+      data = await JuegoBD().findOneAndUpdate({ _id: req.params.id }, newData, { new: true });
+      return res.status(200).json(toJSON(data));
     } catch (err) {
-      console.log(err.toString());
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),
@@ -142,27 +158,28 @@ class JuegosController {
    */
   public async remove(req: Request, res: Response) {
     try {
-      // Existe
-      const index = ListaJuegos.findIndex((juego) => juego.id === req.params.id);
-      if (index === -1) {
+      // Tenemos permiso
+      // Lo de existe no los podíamos ahorrar ya que findOneAndUpdate te puede dar dicho error
+      // Pero lo hacemos porque hemos dicho que no podemos modificarlo si no es nuestro, por eso necesitamos este valor
+      // Si no este if podría ir abajo de dicha función para analizar su resultado
+      let data = await JuegoBD().findById(req.params.id);
+      if (!data) {
         return res.status(404).json({
           success: false,
           mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
         });
       }
-      const data = ListaJuegos[index];
-      // Tenemos permiso
-      if (req.user.id !== data.usuarioId) {
+      const valor: any = data;
+      if (req.user.id !== valor!.usuarioId) {
         return res.status(403).json({
           success: false,
           mensaje: 'No tienes permisos para realizar esta acción',
         });
       }
       // Realizamos la acción
-      ListaJuegos.splice(index, 1);
-      return res.status(200).json(data);
+      data = await JuegoBD().findByIdAndDelete({ _id: req.params.id });
+      return res.status(200).json(toJSON(data));
     } catch (err) {
-      console.log(err.toString());
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),

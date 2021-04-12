@@ -22,6 +22,7 @@ describe('Suite Test de Juegos', () => {
     role: 'USER',
   };
   let tokenTest: string;
+  const juegoIDFalso = '999999999999999999999999';
 
   beforeAll(async () => {
     servicio = await server.start();
@@ -126,9 +127,8 @@ describe('Suite Test de Juegos', () => {
     });
 
     test(`NO Debería obetener un juego con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
       const response = await request(servicio)
-        .get(`/${Path}/${Version}/${EndPoint}/${ID}`);
+        .get(`/${Path}/${Version}/${EndPoint}/${juegoIDFalso}`);
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
     });
@@ -172,11 +172,16 @@ describe('Suite Test de Juegos', () => {
     });
 
     test(`NO Debería modificar un juego pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
+      const data: Juego = {
+        titulo: 'The Legend of Zelda: Breath of the Wild',
+        descripcion: 'La nueva Aventura de Zelda',
+        plataforma: 'Nintendo Switch',
+        imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
+      };
       const response = await request(servicio)
-        .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .put(`/${Path}/${Version}/${EndPoint}/${juegoIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
-        .send({});
+        .send(data);
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
     });
@@ -213,9 +218,8 @@ describe('Suite Test de Juegos', () => {
     });
 
     test(`NO Debería eliminar un juego pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
       const response = await request(servicio)
-        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .delete(`/${Path}/${Version}/${EndPoint}/${juegoIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
