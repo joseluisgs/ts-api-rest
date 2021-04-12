@@ -47,7 +47,7 @@ Este proyecto está basado en dos modos de funcionamiento en la url: http://loca
 - MogoDB: Usando almacenamiento en MogoDB. Lo tienes en la rama MongoDB.
 
 ## Autenticación y Autorización: JWT y Middleware
-Se ha implementado un sistema de atenticación y autorización basado en JWT y aplicando un Middleware para analizar si el usuario puede entrar a un recurso, ya sea por que está autenticado para ello (auth), o tiene permisos dependiendo su rol (grant). Se ha jugado con distintas políticas dependiendo del recurso y se puede adaptar a las distintas necesidades del problema.
+Se ha implementado un sistema de atenticación y autorización basado en JWT y aplicando un Middleware para analizar si el usuario puede entrar a un recurso, ya sea por que está autenticado para ello (auth), o tiene permisos dependiendo su rol (grant), o dicho recurso le pertenece, si tenemos datos que los relacionen (owner). Se ha jugado con distintas políticas dependiendo del recurso y se puede adaptar a las distintas necesidades del problema. En el código podrás ver distintas soluciones con middleware o dentro del controlador.
 
 ## EndPoints
 Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /api/vx/recurso, donde x es a versión de esta api, y recurso es el recurso a consumir, por ejemplo /api/v1/juegos desde http://localhost:8000.
@@ -62,8 +62,8 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 | GET| /juegos | -- | Obtiene todos las juegos |
 | GET | /juegos/id | -- | Obtiene el juego con el id indicado |
 | POST | /juegos | auth | Añade el juego |
-| PUT | /juegos/id | auth | Modifica el juego con el id indicado si pertenece al usuario/a |
-| DELETE | /juegos/id | auth | Elimina el juego con el id indicado si pertenece al usuario/a |
+| PUT | /juegos/id | auth, owner | Modifica el juego con el id indicado si pertenece al usuario/a |
+| DELETE | /juegos/id | auth  | Elimina el juego con el id indicado si pertenece al usuario/a |
 | GET| /files | auth, grant('ADMIN') | Obtiene todos los ficheros. Solo Admin |
 | GET | /files/id | auth | Obtiene datos del fichero con el id indicado si pertenece al usuario/a |
 | GET | /files/download/id | -- | Descarga el fichero con el id indicado |

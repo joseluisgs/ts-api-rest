@@ -9,9 +9,9 @@ import env from '../env';
 
 /**
  * Autenticación. Comprueba que el JWT es válido
- * @param {*} req Request
- * @param {*} res Response
- * @param {*} next Next function
+ * @param req Request
+ * @param res Response
+ * @param next Next function
  */
 const auth = (req: Request, res: Response, next: NextFunction) => {
   // Si la cabecera no tiene un token válido
@@ -40,24 +40,42 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 /**
+ * /**
  * Autorizacion. Permitimos que pueda acceder dependiendo de una lista de roles. Por defecto tenemos el rol normal o user
- * @param {*} role. Es una rray con los permisos, por si queremos tener varios y no mirar el menor de ellos
+ * @param role. Es una rray con los permisos, por si queremos tener varios y no mirar el menor de ellos
+ * @returns 403 No autorizado
  */
 // eslint-disable-next-line consistent-return
 const grant = (role = ['USER']) => (req: Request, res: Response, next: NextFunction) => {
   // Devolvemos el middleware
   // Comprobamos que el rol del usuario existe en la lista de roles permitidos de una manera elegante :)
   const valid = role.some((rol) => rol === req.user.role);
-  if (valid) {
-    next(); // pasamos a la siguiente...
-  } else {
-    // Si no tiene el rol...
+  if (!valid) {
     return res.status(403).json({
       success: false,
       mensaje: 'No Autorizado',
     });
   }
+  next();
+};
+
+/**
+ * Indica si el identificador del usario autenticado corresponde con el identificador del usuario del recurso
+ * De esta mane
+ * @param req Request
+ * @param res Response
+ * @param next Next function
+ * @returns 403 No autorizado
+ */
+const owner = (req: Request, res: Response, next: NextFunction) => {
+  if (req.user.id !== req.body.usuarioId) {
+    return res.status(403).json({
+      success: false,
+      mensaje: 'No tienes permisos para realizar esta acción',
+    });
+  }
+  return next();
 };
 
 // Exportamos el módulo
-export { auth, grant };
+export { auth, grant, owner };
