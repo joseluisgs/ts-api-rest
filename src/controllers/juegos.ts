@@ -112,24 +112,25 @@ class JuegosController {
           mensaje: 'El título del juego es un campo obligatorio',
         });
       }
+      // Implementado en el Middleware. Pero si no nos pasara en ID del usuario deberíamos buscarlo así
       // Tenemos permiso
       // Lo de existe no los podíamos ahorrar ya que findOneAndUpdate te puede dar dicho error
       // Pero lo hacemos porque hemos dicho que no podemos modificarlo si no es nuestro, por eso necesitamos este valor
       // Si no este if podría ir abajo de dicha función para analizar su resultado
-      let data = await JuegoBD().findById(req.params.id);
-      if (!data) {
-        return res.status(404).json({
-          success: false,
-          mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
-        });
-      }
-      const valor: any = data;
-      if (req.user.id !== valor!.usuarioId) {
-        return res.status(403).json({
-          success: false,
-          mensaje: 'No tienes permisos para realizar esta acción',
-        });
-      }
+      // let data = await JuegoBD().findById(req.params.id);
+      // if (!data) {
+      //   return res.status(404).json({
+      //     success: false,
+      //     mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
+      //   });
+      // }
+      // const valor: any = data;
+      // if (req.user.id !== valor!.usuarioId) {
+      //   return res.status(403).json({
+      //     success: false,
+      //     mensaje: 'No tienes permisos para realizar esta acción',
+      //   });
+      // }
       // Realizamos la acción
       const newData = {
         titulo: req.body.titulo,
@@ -140,7 +141,13 @@ class JuegosController {
         imagen: req.body.imagen || undefined,
         usuarioId: req.body.usuarioId || req.user.id,
       };
-      data = await JuegoBD().findOneAndUpdate({ _id: req.params.id }, newData, { new: true });
+      const data = await JuegoBD().findByIdAndUpdate(req.params.id, newData, { new: true }); // con finOneAndUpdate debo poner la proyeccion
+      if (!data) {
+        return res.status(404).json({
+          success: false,
+          mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
+        });
+      }
       return res.status(200).json(toJSON(data));
     } catch (err) {
       return res.status(500).json({
@@ -177,7 +184,7 @@ class JuegosController {
         });
       }
       // Realizamos la acción
-      data = await JuegoBD().findByIdAndDelete({ _id: req.params.id });
+      data = await JuegoBD().findByIdAndDelete(req.params.id);
       return res.status(200).json(toJSON(data));
     } catch (err) {
       return res.status(500).json({

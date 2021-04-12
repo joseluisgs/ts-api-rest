@@ -65,7 +65,7 @@ describe('Suite Test de Juegos', () => {
         descripcion: 'La nueva Aventura de Zelda',
         plataforma: 'Nintendo Switch',
         imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
-        usuarioId: userTest.id || '',
+        usuarioId: userTest.id || undefined,
       };
       const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}`)
@@ -77,6 +77,7 @@ describe('Suite Test de Juegos', () => {
       expect(item.descripcion).toBe(data.descripcion);
       expect(item.plataforma).toBe(data.plataforma);
       expect(item.imagen).toBe(data.imagen);
+      expect(item.usuarioId).toBe(userTest.id);
       juegoID = response.body.id;
     });
 
@@ -141,6 +142,7 @@ describe('Suite Test de Juegos', () => {
         descripcion: 'La nueva Aventura de Zelda',
         plataforma: 'Nintendo Switch',
         imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
+        usuarioId: userTest.id || undefined,
       };
       const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
@@ -153,6 +155,7 @@ describe('Suite Test de Juegos', () => {
       expect(item.plataforma).toBe(data.plataforma);
       expect(item.imagen).toBe(data.imagen);
       expect(item.id).toBe(juegoID);
+      expect(item.usuarioId).toBe(userTest.id);
     });
 
     test(`NO Debería modificar un juego pues falta el título /${Path}/${Version}/${EndPoint}/ID`, async () => {
@@ -161,7 +164,7 @@ describe('Suite Test de Juegos', () => {
         descripcion: 'La nueva Aventura de Zelda',
         plataforma: 'Nintendo Switch',
         imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
-        usuarioId: '111',
+        usuarioId: userTest.id || undefined,
       };
       const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
@@ -177,6 +180,7 @@ describe('Suite Test de Juegos', () => {
         descripcion: 'La nueva Aventura de Zelda',
         plataforma: 'Nintendo Switch',
         imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
+        usuarioId: userTest.id || undefined,
       };
       const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${juegoIDFalso}`)
@@ -184,6 +188,22 @@ describe('Suite Test de Juegos', () => {
         .send(data);
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún juego con ID');
+    });
+
+    test(`NO Debería modificar un juego pues NO me pertenece /${Path}/${Version}/${EndPoint}/ID`, async () => {
+      const data: Juego = {
+        titulo: 'The Legend of Zelda: Breath of the Wild',
+        descripcion: 'La nueva Aventura de Zelda',
+        plataforma: 'Nintendo Switch',
+        imagen: 'https://images-na.ssl-images-amazon.com/images/I/91jvZUxquKL._AC_SL1500_.jpg',
+        usuarioId: 'aaa',
+      };
+      const response = await request(servicio)
+        .put(`/${Path}/${Version}/${EndPoint}/${juegoIDFalso}`)
+        .set({ Authorization: `Bearer ${tokenTest}` })
+        .send(data);
+      expect(response.status).toBe(403);
+      expect(response.body.mensaje).toContain('No tienes permisos para realizar esta acción');
     });
 
     test(`NO Debería modificar un juego token invalido /${Path}/${Version}/${EndPoint}`, async () => {
