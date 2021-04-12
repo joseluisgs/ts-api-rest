@@ -36,7 +36,7 @@ class Database {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
-        // useFindAndModify: false, // si no salta las funciones deprecated
+        useFindAndModify: false, // si no salta las funciones deprecated
       };
       // activamos  el modo depurador si así lo tenemos en nuestro fichero, solo si no estamos en test
       if (env.NODE_ENV !== 'test') {
