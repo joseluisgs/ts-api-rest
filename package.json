@@ -15,7 +15,7 @@
     "test:sec": "jest --runInBand",
     "test:coverage": "jest --coverage --runInBand",
     "test:watch": "jest --watchAll",
-    "docker:mongo": "sh ./mongo.sh",
+    "docker:mariadb": "sh ./mariadb.sh",
     "docker:clean": "sh ./clean-docker.sh",
     "docker:deploy": "docker-compose up -d"
   },

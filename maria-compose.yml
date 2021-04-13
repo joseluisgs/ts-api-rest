@@ -1,0 +1,38 @@
+# Indicamos la versión
+version: '3.7'
+
+# Mis servicios
+services:
+  mariadb-server:
+    image: mariadb
+    # restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: mariapass
+      MYSQL_USER: mariaadmin
+      MYSQL_PASSWORD: mariapass
+      MYSQL_DATABASE: ts-api-rest
+    volumes:
+      - maria-data:/var/lib/mysql
+    networks:
+      - maria-network
+ 
+  adminer:
+    image: adminer
+    # restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - maria-network
+    depends_on:
+      - mariadb-server
+
+# Mis volumenes
+volumes:
+  maria-data:
+
+# Si queremos que tengan una red propia a otros contenedores
+networks:
+  maria-network:
+    driver: bridge
