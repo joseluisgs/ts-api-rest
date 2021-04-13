@@ -4,7 +4,7 @@
 
 import { Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-import db from '../database';
+import mongoDB from '../database';
 
 // Roles
 const roles = {
@@ -36,5 +36,6 @@ const UserSchema = new Schema(
 // Validadores de propiedades.
 UserSchema.plugin(uniqueValidator, { mensaje: 'Error, esperaba {PATH} único.' });
 
-const UserDB = () => db.connection().model('User', UserSchema);
+const UserDB = () => mongoDB.getConnection().model('User', UserSchema);
+
 export default UserDB;
