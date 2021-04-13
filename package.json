@@ -7,7 +7,7 @@
     "dev": "tsc --watch",
     "dev:watch": "nodemon",
     "dev:run": "ts-node --files src/index.ts",
-    "build": "rimraf ./build && tsc",
+    "build": "rimraf ./build && tsc && cp .env ./build",
     "start": "npm run build && node build/index.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
@@ -15,7 +15,9 @@
     "test:sec": "jest --runInBand",
     "test:coverage": "jest --coverage --runInBand",
     "test:watch": "jest --watchAll",
-    "mongo": "sh ./mongo.sh"
+    "docker:mongo": "sh ./mongo.sh",
+    "docker:clean": "sh ./clean-docker.sh",
+    "docker:deploy": "docker-compose up -d"
   },
   "keywords": [
     "TypeScript",

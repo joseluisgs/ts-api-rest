@@ -88,7 +88,9 @@ Tareas que podemos ejecutar dentro de nuestra aplicación. Te recomiendo leer el
 - npm run test:coverage: obtiene el índice de cobertura del código.
 - npm run test:watch: realiza los test mientras modificas el código.
 - npm run test:sec: realiza los test de manera secuencial pues puede dar error al cerrar el servidor.
-- npm run mongo: incia sel servidor local MongoDB y Mongo-Express
+- npm run docker:mongo: incia sel servidor local MongoDB y Mongo-Express
+- npm run docker:clean: limpia todos lso dockers
+- npm run docker:deploy: lanza el fichero docker-compose
 ```
 
 ## Despliegue
