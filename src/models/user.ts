@@ -2,39 +2,42 @@
  * MODELO EN BASE AL ESQUEMA DE NOTAS
  */
 
-import { Schema } from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
+// import sequelize
+import { DataTypes } from 'sequelize';
+// importing connection database
 import db from '../database';
 
-// Roles
-const roles = {
-  values: ['ADMIN', 'USER'],
-  mensaje: '{VALUE} no es un rol válido',
-};
+const conn = db.connect();
 
-// Creación del esquema
-const UserSchema = new Schema(
-  {
-    nombre: { type: String, required: [true, 'Nombre de usuario/a obligatorio'], trim: true },
-    email: {
-      type: String, required: [true, 'E-Mail de usuario/a obligatorio'], trim: true, unique: true, index: true,
-    },
-    password: { type: String, required: [true, 'Password de usuario/a obligatorio'], trim: true },
-    fecha: { type: Date, default: Date.now },
-    role: { type: String, default: 'USER', enum: roles },
+const UserBD = conn.define('user', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
   },
-  // Opciones
-  {
-  // El método estriccto nos dice si aceptamos o no un documento con algo
-  // que no cumpla esta especificacion. Lo ponemos así porque no vamos a meter el id y da un poco de flexibilidad
-    strict: false,
-    // Le añadimos una huella de tiempo
-    timestamps: true,
+  nombre: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
-);
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  fecha: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  role: {
+    type: DataTypes.STRING,
+    defaultValue: 'USER',
+  },
+});
 
-// Validadores de propiedades.
-UserSchema.plugin(uniqueValidator, { mensaje: 'Error, esperaba {PATH} único.' });
+conn.sync();
 
-const UserDB = () => db.connection().model('User', UserSchema);
-export default UserDB;
+export default UserBD;
