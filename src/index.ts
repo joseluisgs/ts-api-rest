@@ -46,7 +46,7 @@ class Server {
       const host = address.address === '::' ? 'localhost' : address.address; // dependiendo de la dirección asi configuramos
       const { port } = address; // el puerto
       if (process.env.NODE_ENV !== 'test') {
-        console.log(chalk.green(`🟢 Servidor API REST escuchando ✅ -> http://${host}:${port}`));
+        console.log(chalk.green.bold(`🟢 Servidor API REST escuchando ✅ -> http://${host}:${port}`));
       }
     });
     return this.servicio; // Devolvemos la instancia del servidor
@@ -61,7 +61,7 @@ class Server {
     // Desconectamos el socket server
     this.servicio.close();
     if (process.env.NODE_ENV !== 'test') {
-      console.log(chalk.grey('⚪️ Servidor parado ❎'));
+      console.log(chalk.grey.bold('⚪️ Servidor parado ❎'));
     }
   }
 }
