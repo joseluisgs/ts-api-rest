@@ -5,13 +5,20 @@
 import { Request, Response } from 'express';
 import JuegoBD from '../models/juego';
 
-// Comprueba que la entrada es correcta de datos. Es auxiliar
+// METODOS AUXILIARES
+
+/**
+ * Comprueba que se nos pasa todos los datos que neesitamos
+ * @param req Request
+ * @returns True/False si los datos son correctos
+ */
 const checkBody = (req: Request) => req.body.titulo && req.body.titulo.trim().length > 0;
 
 /**
- * CONTROLADOR DE JUEGOS
+ * Tranforma la salida del objeto a un formato JSON que nos interesa
+ * @param item Itema a tranformar
+ * @returns salida JSON que nos interesa
  */
-
 const toJSON = (item: any) => {
   // Del objeto MongoDB, renombro la propiedad, quito la v y me quedo con el resto
   const { _id: id, __v, ...rest } = item.toObject();
@@ -19,6 +26,9 @@ const toJSON = (item: any) => {
   return { id, ...rest };
 };
 
+/**
+ * CONTROLADOR DE JUEGOS
+ */
 class JuegosController {
   /**
    * Obtiene todos los elementos existentes
