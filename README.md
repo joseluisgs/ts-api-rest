@@ -15,6 +15,7 @@ Ejemplo de un API REST realizada con TypeScript.
   - [Autenticación y Autorización: JWT y Middleware](#autenticación-y-autorización-jwt-y-middleware)
   - [EndPoints](#endpoints)
   - [TDD: JEST](#tdd-jest)
+  - [Producción y Desarrollo](#producción-y-desarrollo)
   - [Ejecución](#ejecución)
   - [Despliegue](#despliegue)
     - [Docker](#docker)
@@ -75,8 +76,13 @@ Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /ap
 ## TDD: JEST
 Se ha usado la librería Jest, con TypeScript para realizar los test siguiendo un enfoque TDD y Supertest para testear las peticiones HTTP a la API.
 
+## Producción y Desarrollo 
+Es importante que ajustes el fichero .env o que hagas dos de ellos según sea desarrollo o producción y con ello ajustes el docker.compose o la forma de lanzar todo.
+
 ## Ejecución
-Tareas que podemos ejecutar dentro de nuestra aplicación. Te recomiendo leer el fichero package.json:
+Tareas que podemos ejecutar dentro de nuestra aplicación.
+
+Te recomiendo leer el fichero package.json:
 ```bash
 - npm install: para instalar las dependencias.
 - npm start (npm run start): ejecuta el entorno producción.
@@ -88,9 +94,9 @@ Tareas que podemos ejecutar dentro de nuestra aplicación. Te recomiendo leer el
 - npm run test:coverage: obtiene el índice de cobertura del código.
 - npm run test:watch: realiza los test mientras modificas el código.
 - npm run test:sec: realiza los test de manera secuencial pues puede dar error al cerrar el servidor.
-- npm run docker:mongo: incia sel servidor local MongoDB y Mongo-Express
+- npm run docker:mongo: incia sel servidor local MongoDB y Mongo-Express en desarrollo
 - npm run docker:clean: limpia todos lso dockers
-- npm run docker:deploy: lanza el fichero docker-compose
+- npm run docker:deploy: lanza el fichero docker-compose para producción
 ```
 
 ## Despliegue
