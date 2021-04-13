@@ -1,5 +1,6 @@
 import request from 'supertest';
 import http from 'http';
+import { v1 as uuidv1 } from 'uuid';
 import server from '../src';
 import Juego from '../src/interfaces/juego';
 import User from '../src/interfaces/user';
@@ -17,7 +18,7 @@ describe('Suite Test de Juegos', () => {
   let juegoID: string;
   const userTest: User = {
     nombre: 'Test Test',
-    email: 'test@test.com',
+    email: `${uuidv1()}@test.com`,
     password: 'test123',
     role: 'USER',
   };
