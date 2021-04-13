@@ -10,8 +10,8 @@ import chalk from 'chalk';
 conf.config(); // Toda la configuración parseada del fichero .env
 
 // Filtramos que estos parámetros importantes para la ejecución estén para MongoDB
-const paramsMongoBD = process.env.DB_USER && process.env.DB_PASS && process.env.DB_URL && process.env.DB_PORT && process.env.DB_NAME;
-if (!paramsMongoBD) {
+const paramsMariaBD = process.env.DB_USER && process.env.DB_PASS && process.env.DB_URL && process.env.DB_PORT && process.env.DB_NAME;
+if (!paramsMariaBD) {
   console.error(chalk.red('❌ Error: Faltán variables de entorno para la ejecución en MongoDB. Por favor revise su fichero .env'));
   process.exit();
 }
@@ -40,15 +40,15 @@ const env = {
   // CIFRADO
   BC_SALT: Number(process.env.BC_SALT) || 10,
 
-  // MONGODB
-  DB_DEBUG: process.env.DB_DEBUG || 'false', // puede ser true
+  // MARIADB
+  DB_DEBUG: Boolean(process.env.DB_DEBUG) || false, // puede ser true
   DB_POOLSIZE: Number(process.env.DB_POOLSIZE) || 200,
-  DB_PROTOCOL: process.env.DB_PROTOCOL || 'mongodb',
   DB_USER: process.env.DB_USER || '',
   DB_PASS: process.env.DB_PASS || '',
   DB_URL: process.env.DB_URL || 'localhost',
-  DB_PORT: Number(process.env.DB_PORT) || 27017,
-  DB_NAME: process.env.DB_NAME,
+  DB_PORT: Number(process.env.DB_PORT) || 3306,
+  DB_NAME: process.env.DB_NAME || '',
+  DB_SYNC: Boolean(process.env.DB_SYNC) || false,
 };
 
 export default env;
