@@ -1,5 +1,6 @@
 import request from 'supertest';
 import http from 'http';
+import { v1 as uuidv1 } from 'uuid';
 import server from '../src';
 import User from '../src/interfaces/user';
 
@@ -13,8 +14,15 @@ describe('Suite Test de Usuarios', () => {
   const Path = 'api';
   const Version = 'v1';
   const EndPoint = 'user';
+  const userTest = {
+    nombre: 'Test Test',
+    email: `${uuidv1()}@test.com`,
+    password: 'test123',
+    role: 'USER',
+  };
   let userID: string;
   let tokenTest: string;
+  const userIDFalso = '999999999999999999999999';
 
   beforeAll(async () => {
     servicio = await server.start();
@@ -26,15 +34,9 @@ describe('Suite Test de Usuarios', () => {
 
   describe('Suite Test de POST', () => {
     test(`Debería añadir un usuario con los datos indicados /${Path}/${Version}/${EndPoint}/register`, async () => {
-      const data: User = {
-        nombre: 'Test Test',
-        email: 'test@test.com',
-        password: 'test123',
-        role: 'USER',
-      };
       const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}/register`)
-        .send(data);
+        .send(userTest);
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
       // Para el resto de test
@@ -59,8 +61,8 @@ describe('Suite Test de Usuarios', () => {
   describe('Suite Test de Login', () => {
     test(`Debería loguearse un usuario con los datos indicados /${Path}/${Version}/${EndPoint}/login`, async () => {
       const data = {
-        email: 'test@test.com',
-        password: 'test123',
+        email: userTest.email,
+        password: userTest.password,
       };
       const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}/login`)
@@ -101,9 +103,8 @@ describe('Suite Test de Usuarios', () => {
     });
 
     test(`NO Debería obetener un usuario con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
       const response = await request(servicio)
-        .get(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .get(`/${Path}/${Version}/${EndPoint}/${userIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún/a usuario/a con ID');
@@ -137,7 +138,6 @@ describe('Suite Test de Usuarios', () => {
     });
 
     test(`NO Debería modificar un usuario pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
       const data: User = {
         nombre: 'TestMod TestMod',
         email: 'testMod@testMod.com',
@@ -145,11 +145,11 @@ describe('Suite Test de Usuarios', () => {
         role: 'USER',
       };
       const response = await request(servicio)
-        .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .put(`/${Path}/${Version}/${EndPoint}/${userIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
-      expect(response.status).toBe(404);
-      expect(response.body.mensaje).toContain('No se ha encontrado ningún/a usuario/a con ID');
+      expect(response.status).toBe(403);
+      expect(response.body.mensaje).toContain('No tienes permisos para realizar esta acción');
     });
 
     test(`NO Debería modificar un usuario, pues faltan campos o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
@@ -197,12 +197,11 @@ describe('Suite Test de Usuarios', () => {
     });
 
     test(`NO Debería eliminar un usuario pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
       const response = await request(servicio)
-        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .delete(`/${Path}/${Version}/${EndPoint}/${userIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
-      expect(response.status).toBe(404);
-      expect(response.body.mensaje).toContain('No se ha encontrado ningún/a usuario/a con ID');
+      expect(response.status).toBe(403);
+      expect(response.body.mensaje).toContain('No tienes permisos para realizar esta acción');
     });
   });
 });
