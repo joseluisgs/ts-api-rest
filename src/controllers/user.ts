@@ -4,8 +4,11 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jwt-simple';
 import env from '../env';
-import UserBD from '../models/user';
+import MariaDB from '../database';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const conn = MariaDB.getConnection();
+const UserBD = MariaDB.getModels().User;
 // METODOS AUXILIARES
 
 /**

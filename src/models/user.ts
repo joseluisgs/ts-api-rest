@@ -1,15 +1,11 @@
 /**
- * MODELO EN BASE AL ESQUEMA DE NOTAS
+ * MODELO EN BASE AL ESQUEMA DE USUARIO
  */
 
 // import sequelize
-import { DataTypes } from 'sequelize';
-// importing connection database
-import db from '../database';
+import { DataTypes, Sequelize } from 'sequelize';
 
-const conn = db.connect();
-
-const UserBD = conn.define('user', {
+export default (sequelize: Sequelize) => sequelize.define('user', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -37,7 +33,3 @@ const UserBD = conn.define('user', {
     defaultValue: 'USER',
   },
 });
-
-conn.sync();
-
-export default UserBD;

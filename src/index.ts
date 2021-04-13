@@ -6,7 +6,7 @@ import { Sequelize } from 'sequelize';
 import env from './env';
 import config from './config';
 import router from './router';
-import db from './database';
+import mariaDB from './database';
 
 /**
  * Clase servidor de la API REST
@@ -16,7 +16,7 @@ class Server {
 
   private servicio!: http.Server;
 
-  private mariaDB!: Sequelize;
+  private database!: Sequelize;
 
   /**
    * Constructor
@@ -31,8 +31,12 @@ class Server {
    * @returns instancia del servidor http Server
    */
   async start() {
-    // No arrancamos hasta qye MongoDB esté lista
-    this.mariaDB = await db.start();
+    // No arrancamos hasta qye MariaDB esté lista
+    await mariaDB.start();
+    // Si queremos tirar la base de datos y comenzar desde cero, si no solo poner sync(), sin fornce
+    mariaDB.getConnection().sync({ force: true }).then(() => {
+      console.log('Tablas borradas y re-sincronizadas');
+    });
 
     // Le apliacamos la configuracion a nuestro Servidor
     config(this.app);
@@ -56,8 +60,8 @@ class Server {
    * Cierra el Servidor y con ello también nos desconectamos de los servicios que tengamos como MongoDB
    */
   async close() {
-    // Desconectamos MongoDB
-    await this.mariaDB.close();
+    // Desconectamos MariaDB
+    await mariaDB.close();
     // Desconectamos el socket server
     this.servicio.close();
     if (process.env.NODE_ENV !== 'test') {

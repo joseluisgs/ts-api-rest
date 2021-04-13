@@ -7,35 +7,34 @@
 import { Sequelize } from 'sequelize';
 import chalk from 'chalk';
 import env from './env';
-
+import User from './models/user';
 /**
  * configuración de conexión a la base de datos siguiendo un patrón singleton
  */
 
-const init = (): Sequelize => new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASS, {
-  host: env.DB_URL,
-  port: env.DB_PORT,
-  dialect: 'mariadb',
-  logging: env.DB_DEBUG,
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000,
-  },
-});
-
 class Database {
   private conn!: Sequelize;
 
+  private models: any;
+
   /**
-   * Devuelve el objeto de conexión
+   * Crea la conexión a la BB.DD
    */
   connect() {
-    if (!this.conn) {
-      this.conn = init();
-    }
-    return this.conn;
+    this.conn = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASS, {
+      host: env.DB_URL,
+      port: env.DB_PORT,
+      dialect: 'mariadb',
+      logging: env.DB_DEBUG,
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000,
+      },
+    });
+
+    this.initModels();
   }
 
   /**
@@ -45,10 +44,7 @@ class Database {
     // Creamos una cadena de conexión según los parámetros de .env.
     return new Promise<Sequelize>((resolve) => {
       // Configuramos el la conexión del cliente MariaDB
-      this.conn = init();
-      // Sincronizamos todas las tablas, ojo que nos cargamos los datos
-      this.conn.sync({ force: env.DB_SYNC });
-
+      this.connect();
       this.conn.authenticate()
         .then(() => {
           console.log('Connection has been established successfully.');
@@ -65,6 +61,40 @@ class Database {
           return process.exit();
         });
     });
+  }
+
+  /**
+   * Devuelve la conexión a la BB.DD
+   * @returns Conexion
+   */
+  getConnection() {
+    if (!this.conn) this.connect();
+    return this.conn;
+  }
+
+  /**
+   * Cierra la conexión
+   * @returns Promesa
+   */
+  async close() {
+    return this.conn.close();
+  }
+
+  /**
+   * Inicia los modelos, has de poner uno por los que tengas
+   */
+  initModels() {
+    this.models = {
+      User: User(this.conn),
+    };
+  }
+
+  /**
+   * Devuelve los modelos
+   * @returns Modelos
+   */
+  getModels() {
+    return this.models;
   }
 }
 
