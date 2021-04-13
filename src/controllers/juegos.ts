@@ -102,7 +102,6 @@ class JuegosController {
       const data = await newData.save();
       return res.status(201).json(toJSON(data));
     } catch (err) {
-      console.log(err.toString());
       return res.status(500).json({
         success: false,
         mensaje: err.toString(),
@@ -178,7 +177,6 @@ class JuegosController {
    */
   public async remove(req: Request, res: Response) {
     try {
-      // Tenemos permiso
       // Lo de existe no los podíamos ahorrar ya que findOneAndUpdate te puede dar dicho error
       // Pero lo hacemos porque hemos dicho que no podemos modificarlo si no es nuestro, por eso necesitamos este valor
       // Si no este if podría ir abajo de dicha función para analizar su resultado
@@ -190,8 +188,8 @@ class JuegosController {
         });
       }
       // Tenemos permiso, una vez que podemos acceder al objeto
-      const valor: any = data;
-      if (req.user.id !== valor!.usuarioId) {
+      const juego: any = data;
+      if (req.user.id !== juego!.usuarioId) {
         return res.status(403).json({
           success: false,
           mensaje: 'No tienes permisos para realizar esta acción',
