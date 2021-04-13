@@ -16,7 +16,9 @@ const roles = {
 const UserSchema = new Schema(
   {
     nombre: { type: String, required: [true, 'Nombre de usuario/a obligatorio'], trim: true },
-    email: { type: String, required: [true, 'E-Mail de usuario/a obligatorio'], trim: true, unique: true, index: true},
+    email: {
+      type: String, required: [true, 'E-Mail de usuario/a obligatorio'], trim: true, unique: true, index: true,
+    },
     password: { type: String, required: [true, 'Password de usuario/a obligatorio'], trim: true },
     fecha: { type: Date, default: Date.now },
     role: { type: String, default: 'USER', enum: roles },
@@ -33,7 +35,6 @@ const UserSchema = new Schema(
 
 // Validadores de propiedades.
 UserSchema.plugin(uniqueValidator, { mensaje: 'Error, esperaba {PATH} único.' });
-
 
 const UserDB = () => db.connection().model('User', UserSchema);
 export default UserDB;
