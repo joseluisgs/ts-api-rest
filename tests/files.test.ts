@@ -1,5 +1,7 @@
 import request from 'supertest';
-import servidor from '../src';
+import http from 'http';
+import { v1 as uuidv1 } from 'uuid';
+import server from '../src';
 import File from '../src/interfaces/file';
 import User from '../src/interfaces/user';
 
@@ -9,6 +11,7 @@ process.env.NODE_ENV = 'test';
  * TEST: FICHEROS
  */
 describe('Suite Test de Ficheros', () => {
+  let servicio: http.Server;
   const Path = 'api';
   const Version = 'v1';
   const EndPoint = 'files';
@@ -16,15 +19,17 @@ describe('Suite Test de Ficheros', () => {
   let fileID: string;
   const userTest: User = {
     nombre: 'Test Test',
-    email: 'test@test.com',
+    email: `${uuidv1()}@test.com`,
     password: 'test123',
     role: 'ADMIN',
   };
   let tokenTest: string;
+  const fileIDFalso = '999999999999999999999999';
 
   beforeAll(async () => {
+    servicio = await server.start();
     // insertamos al usuario de prueba
-    let response = await request(servidor)
+    let response = await request(servicio)
       .post(`/${Path}/${Version}/user/register`)
       .send(userTest);
     expect(response.status).toBe(201);
@@ -34,7 +39,7 @@ describe('Suite Test de Ficheros', () => {
       email: userTest.email,
       password: userTest.password,
     };
-    response = await request(servidor)
+    response = await request(servicio)
       .post(`/${Path}/${Version}/user/login`)
       .send(data);
     expect(response.status).toBe(200);
@@ -47,17 +52,17 @@ describe('Suite Test de Ficheros', () => {
 
   afterAll(async () => {
     // Borramos al usuario
-    const response = await request(servidor)
+    const response = await request(servicio)
       .delete(`/${Path}/${Version}/user/${userTest.id}`)
       .set({ Authorization: `Bearer ${tokenTest}` });
     expect(response.status).toBe(200);
-    // Cerramos el servidor
-    servidor.close();
+    // Cerramos el servicio
+    server.close();
   });
 
   describe('Suite Test de POST', () => {
     test(`Debería añadir un fichero con los datos indicados /${Path}/${Version}/${EndPoint}`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('file', file);
@@ -68,7 +73,7 @@ describe('Suite Test de Ficheros', () => {
     });
 
     test(`NO Debería añadir un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('kk', file);
@@ -78,7 +83,7 @@ describe('Suite Test de Ficheros', () => {
 
     test(`NO Debería añadir un juego token invalido /${Path}/${Version}/${EndPoint}`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .post(`/${Path}/${Version}/${EndPoint}`)
         .set({ Authorization: `Bearer ${token}` })
         .send({});
@@ -89,7 +94,7 @@ describe('Suite Test de Ficheros', () => {
 
   describe('Suite Test de GET ALL', () => {
     test(`Debería obetener el metodo GET ALL /${Path}/${Version}/${EndPoint}`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
@@ -99,7 +104,7 @@ describe('Suite Test de Ficheros', () => {
 
     test(`No Debería obetener el metodo GET ALL token inválido /${Path}/${Version}/${EndPoint}`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}`)
         .set({ Authorization: `Bearer ${token}` });
       expect(response.status).toBe(401);
@@ -109,7 +114,7 @@ describe('Suite Test de Ficheros', () => {
 
   describe('Suite Test de GET BY ID', () => {
     test(`Debería obetener un fichero con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}/${fileID}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
@@ -118,9 +123,8 @@ describe('Suite Test de Ficheros', () => {
     });
 
     test(`NO Debería obetener un fichero con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
-      const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}/${ID}`)
+      const response = await request(servicio)
+        .get(`/${Path}/${Version}/${EndPoint}/${fileIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
@@ -128,7 +132,7 @@ describe('Suite Test de Ficheros', () => {
 
     test(`NO Debería obetener un fichero con ID indicado token inválido en /${Path}/${Version}/${EndPoint}/ID`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}/${fileID}`)
         .set({ Authorization: `Bearer ${token}` });
       expect(response.status).toBe(401);
@@ -138,15 +142,14 @@ describe('Suite Test de Ficheros', () => {
 
   describe('Suite Test de DWONLOAD BY ID', () => {
     test(`Debería descargar un fichero con ID indicado /${Path}/${Version}/${EndPoint}/download/ID`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .get(`/${Path}/${Version}/${EndPoint}/download/${fileID}`);
       expect(response.status).toBe(200);
     });
 
     test(`NO Debería descacargar un fichero con ID indicado /${Path}/${Version}/${EndPoint}/download/ID`, async () => {
-      const ID = 'aaa';
-      const response = await request(servidor)
-        .get(`/${Path}/${Version}/${EndPoint}/download/${ID}`);
+      const response = await request(servicio)
+        .get(`/${Path}/${Version}/${EndPoint}/download/${fileIDFalso}`);
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
     });
@@ -154,7 +157,7 @@ describe('Suite Test de Ficheros', () => {
 
   describe('Suite Test de PUT', () => {
     test(`Debería modificar un fichero con los datos indicados /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${fileID}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('file', file);
@@ -163,9 +166,8 @@ describe('Suite Test de Ficheros', () => {
     });
 
     test(`NO Debería modificar un fichero pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
-      const response = await request(servidor)
-        .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
+      const response = await request(servicio)
+        .put(`/${Path}/${Version}/${EndPoint}/${fileIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('file', file);
       expect(response.status).toBe(404);
@@ -173,7 +175,7 @@ describe('Suite Test de Ficheros', () => {
     });
 
     test(`NO Debería modificar un fichero, pues falta file o el campo es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${fileID}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('kk', file);
@@ -183,7 +185,7 @@ describe('Suite Test de Ficheros', () => {
 
     test(`NO Debería modificar un fichero, token es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .put(`/${Path}/${Version}/${EndPoint}/${fileID}`)
         .set({ Authorization: `Bearer ${token}` })
         .attach('file', file);
@@ -194,7 +196,7 @@ describe('Suite Test de Ficheros', () => {
 
   describe('Suite Test de DELETE', () => {
     test(`Debería eliminar un fichero dado su ID /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const response = await request(servidor)
+      const response = await request(servicio)
         .delete(`/${Path}/${Version}/${EndPoint}/${fileID}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
@@ -203,9 +205,8 @@ describe('Suite Test de Ficheros', () => {
     });
 
     test(`NO Debería eliminar un fichero pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
-      const response = await request(servidor)
-        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`)
+      const response = await request(servicio)
+        .delete(`/${Path}/${Version}/${EndPoint}/${fileIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
@@ -213,7 +214,7 @@ describe('Suite Test de Ficheros', () => {
 
     test(`NO Debería eliminar un fichero, token es incorrecto /${Path}/${Version}/${EndPoint}`, async () => {
       const token = `${tokenTest}123`;
-      const response = await request(servidor)
+      const response = await request(servicio)
         .delete(`/${Path}/${Version}/${EndPoint}/${fileID}`)
         .set({ Authorization: `Bearer ${token}` })
         .attach('file', file);

@@ -2,9 +2,11 @@ import express from 'express';
 import http from 'http';
 import chalk from 'chalk';
 import { AddressInfo } from 'node:net';
+import mongoose from 'mongoose';
 import env from './env';
 import config from './config';
 import router from './router';
+import db from './database';
 
 /**
  * Clase servidor de la API REST
@@ -12,7 +14,9 @@ import router from './router';
 class Server {
   private app: express.Express;
 
-  private instancia: http.Server;
+  private servicio!: http.Server;
+
+  private mongoDB!: mongoose.Connection;
 
   /**
    * Constructor
@@ -20,14 +24,16 @@ class Server {
   constructor() {
     // Cargamos express como servidor
     this.app = express();
-    this.instancia = http.createServer();
   }
 
   /**
    * Inicia el Servidor
    * @returns instancia del servidor http Server
    */
-  start() {
+  async start() {
+    // No arrancamos hasta qye MongoDB esté lista
+    this.mongoDB = await db.connect();
+
     // Le apliacamos la configuracion a nuestro Servidor
     config(this.app);
 
@@ -35,25 +41,27 @@ class Server {
     router(this.app);
 
     // Nos ponemos a escuchar a un puerto definido en la configuracion
-    this.instancia = this.app.listen(env.PORT, () => {
-      const address = this.instancia.address() as AddressInfo;
+    this.servicio = this.app.listen(env.PORT, () => {
+      const address = this.servicio.address() as AddressInfo;
       const host = address.address === '::' ? 'localhost' : address.address; // dependiendo de la dirección asi configuramos
       const { port } = address; // el puerto
       if (process.env.NODE_ENV !== 'test') {
-        console.log(chalk.green(`🟢 Servidor API REST escuchando ✅ -> http://${host}:${port}`));
+        console.log(chalk.green.bold(`🟢 Servidor API REST escuchando ✅ -> http://${host}:${port}`));
       }
     });
-    return this.instancia; // Devolvemos la instancia del servidor
+    return this.servicio; // Devolvemos la instancia del servidor
   }
 
   /**
-   * Cierra el Servidor
+   * Cierra el Servidor y con ello también nos desconectamos de los servicios que tengamos como MongoDB
    */
-  close() {
+  async close() {
+    // Desconectamos MongoDB
+    await this.mongoDB.close();
     // Desconectamos el socket server
-    this.instancia.close();
+    this.servicio.close();
     if (process.env.NODE_ENV !== 'test') {
-      console.log(chalk.grey('⚪️ Servidor parado ❎'));
+      console.log(chalk.grey.bold('⚪️ Servidor parado ❎'));
     }
   }
 }
@@ -62,11 +70,15 @@ class Server {
  * Devuelve la instancia de conexión siempre la misma, singleton
  */
 const server = new Server();
-
 // Exportamos el servidor inicializado
-export default server.start();
+export default server;
 
-// Si ningun fichero está haciendo un import y ejecutando ya el servidor, lo lanzamos nosotros
+// La siguiente sección de código sólo se ejecutará si este fichero es el punto de entrada del programa principal
+// Lo hacemos porque también lo llamamos en test.
+// https://nodejs.org/api/deprecations.html#DEP0144
+if (require.main === module) {
+  server.start();
+}
 
 process.on('unhandledRejection', (err) => {
   console.log(chalk.red('❌ Custom Error: An unhandledRejection occurred'));

@@ -2,28 +2,10 @@
 version: '3.7'
 
 # Mis servicios
-# Iniciamos los servicios
 services:
-
-  # API REST TS
-  ts-api-rest:
-    container_name: ts-api-rest
-    # image: "joseluisgs/ts-api-rest"
-    build: .
-    ports:
-      - 8000:8000
-    volumes:
-      - api-files:/app/build/public
-    networks:
-      - api-network
-    depends_on:
-      - mongodb-server
-    # restart: always
-  
-  # MONGO DB
   mongodb-server:
     image: mongo
-    container_name: ts-api-mongo
+    # restart: always
     ports:
       - 27017:27017
     environment:
@@ -31,34 +13,29 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: mongopass
     command: --auth
     volumes:
-      - api-mongo:/data/db
+      - mongo-data:/data/db
     networks:
-      - api-network
-    # restart: always
-
-  # MONGO EXPRESS
+      - mongo-network
+ 
   mongo-express:
     image: mongo-express
-    container_name: ts-api-mongo-empress
+    # restart: always
     ports:
       - 8081:8081
     networks:
-      - api-network
+      - mongo-network
     depends_on:
       - mongodb-server
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
       ME_CONFIG_MONGODB_ADMINPASSWORD: mongopass
       ME_CONFIG_MONGODB_SERVER: mongodb-server
-    # restart: always
 
-
-# Mi volumenes de datos compartidos
+# Mis volumenes
 volumes:
-  api-files:
-  api-mongo:
+  mongo-data:
 
 # Si queremos que tengan una red propia a otros contenedores
 networks:
-  api-network:
+  mongo-network:
     driver: bridge

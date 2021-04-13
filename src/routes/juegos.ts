@@ -5,7 +5,7 @@
 // Cargamos librerías, podemos usar la sitaxis EM6: import { Router } from 'express';
 import express from 'express';
 import juegosController from '../controllers/juegos';
-import { auth } from '../middlewares/auth';
+import { auth, owner } from '../middlewares/auth';
 
 // Middleware
 //  auth, grant(['ADMIN']), si no se pone gran, es porque es que esta implícito role(['user'])
@@ -22,10 +22,10 @@ juegosRouter.get('/:id', juegosController.findById);
 // POST Añadir Elemento. Solo autenticados
 juegosRouter.post('/', auth, juegosController.add);
 
-// PUT Modifica un elemento por ID. Solo autenticados
-juegosRouter.put('/:id', auth, juegosController.update);
+// PUT Modifica un elemento por ID. Solo autenticados y nos pertenece
+juegosRouter.put('/:id', auth, owner, juegosController.update);
 
-// DELETE Elimina un elemento por ID. Solo autenticados
+// DELETE Elimina un elemento por ID. Solo autenticados y nos pertenece
 juegosRouter.delete('/:id', auth, juegosController.remove);
 
 // Exprotamos el módulo
