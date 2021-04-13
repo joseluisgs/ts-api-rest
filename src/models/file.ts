@@ -9,7 +9,9 @@ import db from '../database';
 // Creación del esquema
 const FileSchema = new Schema(
   {
-    nombre: { type: String, required: [true, 'Nombre de fichero obligatorio'], trim: true, unique: true, index: true },
+    nombre: {
+      type: String, required: [true, 'Nombre de fichero obligatorio'], trim: true, unique: true, index: true,
+    },
     url: { type: String, required: [true, 'La dirección url del fichero es obligatoria'], trim: true },
     plataforma: { type: String, trim: true },
     fecha: { type: Date, default: Date.now },
