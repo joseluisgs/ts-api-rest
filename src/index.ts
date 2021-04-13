@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import chalk from 'chalk';
 import { AddressInfo } from 'node:net';
-import mongoose from 'mongoose';
+import { Sequelize } from 'sequelize';
 import env from './env';
 import config from './config';
 import router from './router';
@@ -16,7 +16,7 @@ class Server {
 
   private servicio!: http.Server;
 
-  private mongoDB!: mongoose.Connection;
+  private mariaDB!: Sequelize;
 
   /**
    * Constructor
@@ -32,7 +32,7 @@ class Server {
    */
   async start() {
     // No arrancamos hasta qye MongoDB esté lista
-    this.mongoDB = await db.connect();
+    this.mariaDB = await db.start();
 
     // Le apliacamos la configuracion a nuestro Servidor
     config(this.app);
@@ -57,7 +57,7 @@ class Server {
    */
   async close() {
     // Desconectamos MongoDB
-    await this.mongoDB.close();
+    await this.mariaDB.close();
     // Desconectamos el socket server
     this.servicio.close();
     if (process.env.NODE_ENV !== 'test') {

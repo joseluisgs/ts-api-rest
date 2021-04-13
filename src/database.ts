@@ -4,64 +4,66 @@
  */
 
 // Librerías
-import mongoose from 'mongoose';
+import { Sequelize } from 'sequelize';
 import chalk from 'chalk';
 import env from './env';
 
 /**
  * configuración de conexión a la base de datos siguiendo un patrón singleton
  */
+
+const init = (): Sequelize => new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASS, {
+  host: env.DB_URL,
+  port: env.DB_PORT,
+  dialect: 'mariadb',
+  logging: env.DB_DEBUG,
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
+});
+
 class Database {
-  private conn!: mongoose.Connection;
+  private conn!: Sequelize;
 
   /**
    * Devuelve el objeto de conexión
    */
-  connection() {
+  connect() {
+    if (!this.conn) {
+      this.conn = init();
+    }
     return this.conn;
   }
 
   /**
    * Se conecta a la conexión indicada. Se realiza por promesas, es decir, hasta que no se cumpla la promesa, espera el proceso del servidor
    */
-  connect() {
-    // Creamos una cadena de conexión según los parámetros de .env. Ojo que esta partida la línea, poner ?authSource=admin para autenticarse en Mogo Docker local
-    const host = `${env.DB_PROTOCOL}://${env.DB_USER}:${env.DB_PASS}@${env.DB_URL}:${env.DB_PORT}/${env.DB_NAME}?authSource=admin&retryWrites=true&w=majority`;
+  start() {
+    // Creamos una cadena de conexión según los parámetros de .env.
+    return new Promise<Sequelize>((resolve) => {
+      // Configuramos el la conexión del cliente MariaDB
+      this.conn = init();
+      // Sincronizamos todas las tablas, ojo que nos cargamos los datos
+      this.conn.sync({ force: env.DB_SYNC });
 
-    // Definimos una promesa que se resollverá si nos conecatmos correctamente
-    return new Promise<mongoose.Connection>((resolve) => {
-      // Configuramos el la conexión del cliente Mongo
-      const options = {
-        poolSize: env.DB_POOLSIZE,
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false, // si no salta las funciones deprecated
-      };
-      // activamos  el modo depurador si así lo tenemos en nuestro fichero, solo si no estamos en test
-      if (env.NODE_ENV !== 'test') {
-        mongoose.set('debug', env.DB_DEBUG);
-      }
-      mongoose.Promise = global.Promise;
-
-      // Creamos la cenexión
-      this.conn = mongoose.createConnection(host, options);
-
-      // Si hay un error, salimos de la apliación
-      this.conn.on('error', (err) => {
-        if (process.env.NODE_ENV !== 'test') {
-          console.error(chalk.red('❌ MongoDB Error', err));
-        }
-        return process.exit();
-      });
-
-      // Si recibimos el evento conectamos
-      this.conn.on('connected', () => {
-        if (process.env.NODE_ENV !== 'test') {
-          console.log(chalk.green(`🟢 Conectado al Servidor MogoDB ✅ -> http://${env.DB_URL}:${env.DB_PORT}`));
-        }
-        resolve(this.conn); // Resolvemos la promesa
-      });
+      this.conn.authenticate()
+        .then(() => {
+          console.log('Connection has been established successfully.');
+          if (process.env.NODE_ENV !== 'test') {
+            console.log(chalk.green(`🟢 Conectado al Servidor MariaDB ✅ -> http://${env.DB_URL}:${env.DB_PORT}`));
+          }
+          resolve(this.conn); // Resolvemos la promesa
+        })
+        .catch((err) => {
+          console.error('Unable to connect to the database:', err);
+          if (process.env.NODE_ENV !== 'test') {
+            console.error(chalk.red('❌ MariaDB Error', err));
+          }
+          return process.exit();
+        });
     });
   }
 }
