@@ -1,5 +1,6 @@
 import request from 'supertest';
 import http from 'http';
+import { v1 as uuidv1 } from 'uuid';
 import server from '../src';
 import File from '../src/interfaces/file';
 import User from '../src/interfaces/user';
@@ -18,11 +19,12 @@ describe('Suite Test de Ficheros', () => {
   let fileID: string;
   const userTest: User = {
     nombre: 'Test Test',
-    email: 'test@test.com',
+    email: `${uuidv1()}@test.com`,
     password: 'test123',
     role: 'ADMIN',
   };
   let tokenTest: string;
+  const fileIDFalso = '999999999999999999999999';
 
   beforeAll(async () => {
     servicio = await server.start();
@@ -121,9 +123,8 @@ describe('Suite Test de Ficheros', () => {
     });
 
     test(`NO Debería obetener un fichero con ID indicado /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
       const response = await request(servicio)
-        .get(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .get(`/${Path}/${Version}/${EndPoint}/${fileIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
@@ -147,9 +148,8 @@ describe('Suite Test de Ficheros', () => {
     });
 
     test(`NO Debería descacargar un fichero con ID indicado /${Path}/${Version}/${EndPoint}/download/ID`, async () => {
-      const ID = 'aaa';
       const response = await request(servicio)
-        .get(`/${Path}/${Version}/${EndPoint}/download/${ID}`);
+        .get(`/${Path}/${Version}/${EndPoint}/download/${fileIDFalso}`);
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');
     });
@@ -166,9 +166,8 @@ describe('Suite Test de Ficheros', () => {
     });
 
     test(`NO Debería modificar un fichero pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
       const response = await request(servicio)
-        .put(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .put(`/${Path}/${Version}/${EndPoint}/${fileIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` })
         .attach('file', file);
       expect(response.status).toBe(404);
@@ -206,9 +205,8 @@ describe('Suite Test de Ficheros', () => {
     });
 
     test(`NO Debería eliminar un fichero pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
-      const ID = 'aaa';
       const response = await request(servicio)
-        .delete(`/${Path}/${Version}/${EndPoint}/${ID}`)
+        .delete(`/${Path}/${Version}/${EndPoint}/${fileIDFalso}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(404);
       expect(response.body.mensaje).toContain('No se ha encontrado ningún fichero con ID');

@@ -8,7 +8,7 @@ import db from '../database';
 // Creación del esquema
 const JuegoSchema = new Schema(
   {
-    titulo: { type: String, required: [true, 'Título de la nota obligatorio'], trim: true },
+    titulo: { type: String, required: [true, 'Título del Juego obligatorio'], trim: true },
     descripcion: { type: String, trim: true },
     plataforma: { type: String, trim: true },
     fecha: { type: Date, default: Date.now },
