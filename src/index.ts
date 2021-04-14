@@ -30,6 +30,11 @@ class Server {
   async start() {
     // No arrancamos hasta qye MongoDB esté lista
     await mongoDB.start();
+    // Si queremos tirar la base de datos y comenzar desde cero,
+    if (process.env.NODE_ENV !== 'test') {
+      await mongoDB.removeCollections();
+      console.log(chalk.yellow('🗃  Tablas borradas y re-sincronizadas'));
+    }
 
     // Le apliacamos la configuracion a nuestro Servidor
     config(this.app);

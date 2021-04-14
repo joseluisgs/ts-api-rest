@@ -73,6 +73,11 @@ class Database {
   async close() {
     return this.conn.close();
   }
+
+  async removeCollections() {
+    const collections = await this.conn.db.collections();
+    collections.forEach(async (collection) => collection.deleteMany({}));
+  }
 }
 
 /**
