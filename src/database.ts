@@ -29,11 +29,11 @@ class Database {
       pool: {
         max: 5,
         min: 0,
-        acquire: 30000,
-        idle: 10000,
+        acquire: 30000, // acquire: 30000,
+        idle: 500, // idle: 10000, he cambiad el valor porque los test de jest tienen una duración, así cierra la conexion antes
       },
     });
-
+    // Iniciamos los modelos
     this.initModels();
   }
 
@@ -47,7 +47,6 @@ class Database {
       this.connect();
       this.conn.authenticate()
         .then(() => {
-          console.log('Connection has been established successfully.');
           if (process.env.NODE_ENV !== 'test') {
             console.log(chalk.green(`🟢 Conectado al Servidor MariaDB ✅ -> http://${env.DB_URL}:${env.DB_PORT}`));
           }
