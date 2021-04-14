@@ -33,7 +33,7 @@ class Server {
     // Si queremos tirar la base de datos y comenzar desde cero,
     if (process.env.NODE_ENV !== 'test') {
       await mongoDB.removeCollections();
-      console.log(chalk.yellow('🗃  Tablas borradas y re-sincronizadas'));
+      console.log(chalk.yellow('🗃  Colleciones borradas y re-sincronizadas'));
     }
 
     // Le apliacamos la configuracion a nuestro Servidor
