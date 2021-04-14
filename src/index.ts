@@ -35,7 +35,7 @@ class Server {
     await mariaDB.start();
     // Si queremos tirar la base de datos y comenzar desde cero, si no solo poner sync(), sin force
     if (process.env.NODE_ENV !== 'test') {
-      await  mariaDB.getConnection().sync({ force: true });
+      await mariaDB.getConnection().sync({ force: true });
       console.log(chalk.yellow('🗃  Tablas borradas y re-sincronizadas'));
     }
 
