@@ -12,7 +12,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "jest",
-    "test:sec": "jest --runInBand",
+    "test:sec": "jest --runInBand --detectOpenHandles",
     "test:coverage": "jest --coverage --runInBand",
     "test:watch": "jest --watchAll",
     "docker:mariadb": "sh ./mariadb.sh",
