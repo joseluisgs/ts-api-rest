@@ -18,8 +18,9 @@ describe('Suite Test de Servidor', () => {
     servicio = await server.start();
   });
 
-  afterAll(async () => {
+  afterAll(async (done) => {
     server.close();
+    done();
   });
 
   test('Debería iniciarse el servidor, no es nulo', () => {
