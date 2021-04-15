@@ -10,6 +10,7 @@ import env from './env';
 // Modelos
 import User from './models/user';
 import Juego from './models/juego';
+import File from './models/file';
 /**
  * configuración de conexión a la base de datos siguiendo un patrón singleton
  */
@@ -88,6 +89,7 @@ class Database {
     this.models = {
       User: User(this.conn),
       Juego: Juego(this.conn),
+      File: File(this.conn),
     };
   }
 

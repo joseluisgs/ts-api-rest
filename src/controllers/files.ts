@@ -3,8 +3,12 @@
 import { Request, Response } from 'express';
 import { v1 as uuidv1 } from 'uuid';
 import fs from 'fs';
+import MariaDB from '../database';
 import env from '../env';
-import FileBD from '../models/file';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const conn = MariaDB.getConnection();
+const FileBD = MariaDB.getModels().File;
 
 // METODOS AUXILIARES
 
@@ -23,18 +27,6 @@ const checkFile = (req: Request) => req.files && Object.keys(req.files).length !
 const getFullUrl = (req: Request) => `${req.protocol}://${req.headers.host}${req.originalUrl}`;
 
 /**
- * Tranforma la salida del objeto a un formato JSON que nos interesa
- * @param item Itema a tranformar
- * @returns salida JSON que nos interesa
- */
-const toJSON = (item: any) => {
-  // Del objeto MongoDB, renombro la propiedad, quito la v y me quedo con el resto
-  const { _id: id, __v, ...rest } = item.toObject();
-  // construto un nuevo objeto
-  return { id, ...rest };
-};
-
-/**
  * CONTROLADOR DE FICHEROS
  */
 
@@ -47,9 +39,9 @@ class FilesController {
    */
   public async findAll(req: Request, res: Response) {
     try {
-      const data = await FileBD().find();
+      const data = await FileBD.findAll();
       // Maquillamos el JSON para quitar los campos de MongoDB no nos interesen
-      return res.status(200).json(data.map(toJSON));
+      return res.status(200).json(data);
     } catch (err) {
       return res.status(500).json({
         success: false,
@@ -67,7 +59,7 @@ class FilesController {
   public async findById(req: Request, res: Response) {
     try {
       // Existe
-      const data = await FileBD().findById(req.params.id);
+      const data = await FileBD.findByPk(req.params.id);
       if (!data) {
         return res.status(404).json({
           success: false,
@@ -75,8 +67,8 @@ class FilesController {
         });
       }
       // Tenemos permiso, sin middleware
-      const file: any = toJSON(data);
-      if (req.user.id !== String(file!.usuarioId)) {
+      const file = data.dataValues;
+      if (Number(req.user.id) !== Number(file.usuarioId)) {
         return res.status(403).json({
           success: false,
           mensaje: 'No tienes permisos para realizar esta acción',
@@ -114,16 +106,14 @@ class FilesController {
       fileName = `${uuidv1()}.${fileExt}`; // this.getStorageName(file);
       file.mv(env.STORAGE + fileName);
 
-      const newData = new (FileBD())({
-        id: fileName,
+      const data = await FileBD.create({
         nombre: fileName,
         url: `${getFullUrl(req)}download/${fileName}`,
         fecha: new Date(),
         usuarioId: req.body.usuarioId || req.user.id,
       });
       // Acción
-      const data = await newData.save();
-      return res.status(201).json(toJSON(data));
+      return res.status(201).json(data.dataValues);
     } catch (err) {
       console.log(err.toString());
       return res.status(500).json({
@@ -150,15 +140,15 @@ class FilesController {
         });
       }
       // Existe y tenemos permiso
-      const data = await FileBD().findById(req.params.id);
+      const data = await FileBD.findByPk(req.params.id);
       if (!data) {
         return res.status(404).json({
           success: false,
           mensaje: `No se ha encontrado ningún fichero con ID: ${req.params.id}`,
         });
       }
-      const oldData: any = data;
-      if (req.user.id !== oldData!.usuarioId) {
+      const oldData = data.dataValues;
+      if (Number(req.user.id) !== Number(oldData.usuarioId)) {
         return res.status(403).json({
           success: false,
           mensaje: 'No tienes permisos para realizar esta acción',
@@ -186,7 +176,7 @@ class FilesController {
   public async remove(req: Request, res: Response) {
     try {
       // Existe y tenemos permiso
-      let data = await FileBD().findById(req.params.id);
+      let data = await FileBD.findByPk(req.params.id);
       if (!data) {
         return res.status(404).json({
           success: false,
@@ -194,8 +184,8 @@ class FilesController {
         });
       }
       // Tenemos permiso, una vez que podemos acceder al objeto
-      const file: any = data;
-      if (req.user.id !== file!.usuarioId) {
+      const file = data.dataValues;
+      if (Number(req.user.id) !== Number(file.usuarioId)) {
         return res.status(403).json({
           success: false,
           mensaje: 'No tienes permisos para realizar esta acción',
@@ -203,8 +193,13 @@ class FilesController {
       }
       // Acción
       fs.unlinkSync(env.STORAGE + file.nombre);
-      data = await FileBD().findByIdAndDelete(req.params.id);
-      return res.status(200).json(toJSON(data));
+      // Realizamos la acción
+      data = await FileBD.destroy({
+        where: {
+          id: req.params.id,
+        },
+      });
+      return res.status(200).json(data);
     } catch (err) {
       console.log(err.toString());
       return res.status(500).json({
@@ -223,14 +218,14 @@ class FilesController {
    */
   public async download(req: Request, res: Response) {
     try {
-      const data = await FileBD().findById(req.params.id);
+      const data = await FileBD.findByPk(req.params.id);
       if (!data) {
         return res.status(404).json({
           success: false,
           mensaje: `No se ha encontrado ningún fichero con ID: ${req.params.id}`,
         });
       }
-      const file: any = data;
+      const file = data.dataValues;
       return res.status(200).download(env.STORAGE + file.nombre);
     } catch (err) {
       return res.status(500).json({

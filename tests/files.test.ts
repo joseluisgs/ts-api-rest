@@ -50,7 +50,7 @@ describe('Suite Test de Ficheros', () => {
     userTest.id = response.body.user.id;
   });
 
-  afterAll(async () => {
+  afterAll(async (done) => {
     // Borramos al usuario
     const response = await request(servicio)
       .delete(`/${Path}/${Version}/user/${userTest.id}`)
@@ -58,6 +58,7 @@ describe('Suite Test de Ficheros', () => {
     expect(response.status).toBe(200);
     // Cerramos el servicio
     server.close();
+    done();
   });
 
   describe('Suite Test de POST', () => {
@@ -200,8 +201,6 @@ describe('Suite Test de Ficheros', () => {
         .delete(`/${Path}/${Version}/${EndPoint}/${fileID}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
-      const item:File = response.body;
-      expect(item).toHaveProperty('nombre');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
     });
 
     test(`NO Debería eliminar un fichero pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
