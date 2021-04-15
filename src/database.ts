@@ -7,7 +7,9 @@
 import { Sequelize } from 'sequelize';
 import chalk from 'chalk';
 import env from './env';
+// Modelos
 import User from './models/user';
+import Juego from './models/juego';
 /**
  * configuración de conexión a la base de datos siguiendo un patrón singleton
  */
@@ -85,6 +87,7 @@ class Database {
   initModels() {
     this.models = {
       User: User(this.conn),
+      Juego: Juego(this.conn),
     };
   }
 

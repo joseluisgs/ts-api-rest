@@ -20,13 +20,13 @@ juegosRouter.get('/', juegosController.findAll);
 juegosRouter.get('/:id', juegosController.findById);
 
 // POST Añadir Elemento. Solo autenticados
-juegosRouter.post('/', auth, juegosController.add);
+juegosRouter.post('/', juegosController.add);
 
 // PUT Modifica un elemento por ID. Solo autenticados y nos pertenece
-juegosRouter.put('/:id', auth, owner, juegosController.update);
+// juegosRouter.put('/:id', auth, owner, juegosController.update);
 
 // DELETE Elimina un elemento por ID. Solo autenticados y nos pertenece
-juegosRouter.delete('/:id', auth, juegosController.remove);
+// juegosRouter.delete('/:id', auth, juegosController.remove);
 
 // Exprotamos el módulo
 export default juegosRouter;
