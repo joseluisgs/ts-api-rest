@@ -98,7 +98,7 @@ Te recomiendo leer el fichero package.json:
 - npm run test:watch: realiza los test mientras modificas el código.
 - npm run test:sec: realiza los test de manera secuencial pues puede dar error al cerrar el servidor.
 - npm run docker:mariadb: incia sel servidor local MariaDB y Adminer en desarrollo
-- npm run docker:clean: limpia todos lso dockers
+- npm run docker:clean: limpia todos los dockers
 - npm run docker:deploy: lanza el fichero docker-compose para producción
 ```
 
