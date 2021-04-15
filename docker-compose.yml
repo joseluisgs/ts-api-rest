@@ -17,46 +17,41 @@ services:
     networks:
       - api-network
     depends_on:
-      - mongodb-server
+      - mariadb-server
     # restart: always
   
-  # MONGO DB
-  mongodb-server:
-    image: mongo
-    container_name: ts-api-mongo
+  # MARIA DB
+  mariadb-server:
+    image: mariadb
+    # restart: always
     ports:
-      - 27017:27017
+      - 3306:3306
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongoadmin
-      MONGO_INITDB_ROOT_PASSWORD: mongopass
-    command: --auth
+      MYSQL_ROOT_PASSWORD: mariapass
+      MYSQL_USER: mariaadmin
+      MYSQL_PASSWORD: mariapass
+      MYSQL_DATABASE: ts-api-rest
     volumes:
-      - api-mongo:/data/db
+      - api-maria:/var/lib/mysql
     networks:
       - api-network
     # restart: always
 
   # MONGO EXPRESS
-  mongo-express:
-    image: mongo-express
-    container_name: ts-api-mongo-empress
+  adminer:
+    image: adminer
+    # restart: always
     ports:
-      - 8081:8081
+      - 8080:8080
     networks:
       - api-network
     depends_on:
-      - mongodb-server
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: mongopass
-      ME_CONFIG_MONGODB_SERVER: mongodb-server
-    # restart: always
-
+      - mariadb-server
 
 # Mi volumenes de datos compartidos
 volumes:
   api-files:
-  api-mongo:
+  api-maria:
 
 # Si queremos que tengan una red propia a otros contenedores
 networks:
