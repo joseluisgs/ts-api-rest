@@ -106,59 +106,57 @@ class JuegosController {
    * @param res Response
    * @returns 200 si OK y elemento nuevo JSON
    */
-  // public async update(req: Request, res: Response) {
-  //   try {
-  //     // Están todos los datos
-  //     if (!checkBody(req)) {
-  //       return res.status(422).json({
-  //         success: false,
-  //         mensaje: 'El título del juego es un campo obligatorio',
-  //       });
-  //     }
-  //     // Implementado en el Middleware. Pero si no nos pasara en ID del usuario deberíamos buscarlo así
-  //     // Tenemos permiso
-  //     // Lo de existe no los podíamos ahorrar ya que findOneAndUpdate te puede dar dicho error
-  //     // Pero lo hacemos porque hemos dicho que no podemos modificarlo si no es nuestro, por eso necesitamos este valor
-  //     // Si no este if podría ir abajo de dicha función para analizar su resultado
-  //     let data = await JuegoBD().findById(req.params.id);
-  //     if (!data) {
-  //       return res.status(404).json({
-  //         success: false,
-  //         mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
-  //       });
-  //     }
-  //     const oldData: any = data;
-  //     // if (req.user.id !== oldData!.usuarioId) {
-  //     //   return res.status(403).json({
-  //     //     success: false,
-  //     //     mensaje: 'No tienes permisos para realizar esta acción',
-  //     //   });
-  //     // }
-  //     // Realizamos la acción
-  //     const newData = {
-  //       titulo: req.body.titulo || oldData.titulo,
-  //       descripcion: req.body.descripcion || oldData.descripcion,
-  //       plataforma: req.body.plataforma || oldData.plataforma,
-  //       fecha: req.body.fecha || oldData.fecha,
-  //       activo: Boolean(req.body.activo) || oldData.activo,
-  //       imagen: req.body.imagen || oldData.imagen,
-  //       usuarioId: req.body.usuarioId || oldData.usuarioId,
-  //     };
-  //     data = await JuegoBD().findByIdAndUpdate(req.params.id, newData, { new: true }); // con finOneAndUpdate debo poner la proyeccion
-  //     if (!data) {
-  //       return res.status(404).json({
-  //         success: false,
-  //         mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
-  //       });
-  //     }
-  //     return res.status(200).json(toJSON(data));
-  //   } catch (err) {
-  //     return res.status(500).json({
-  //       success: false,
-  //       mensaje: err.toString(),
-  //     });
-  //   }
-  // }
+  public async update(req: Request, res: Response) {
+    try {
+      // Están todos los datos
+      if (!checkBody(req)) {
+        return res.status(422).json({
+          success: false,
+          mensaje: 'El título del juego es un campo obligatorio',
+        });
+      }
+      // Implementado en el Middleware. Pero si no nos pasara en ID del usuario deberíamos buscarlo así
+      // Tenemos permiso
+      // Lo de existe no los podíamos ahorrar ya que findOneAndUpdate te puede dar dicho error
+      // Pero lo hacemos porque hemos dicho que no podemos modificarlo si no es nuestro, por eso necesitamos este valor
+      // Si no este if podría ir abajo de dicha función para analizar su resultado
+      let data = await JuegoBD.findByPk(req.params.id);
+      if (!data) {
+        return res.status(404).json({
+          success: false,
+          mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
+        });
+      }
+      const oldData = data.dataValues;
+      // if (req.user.id !== oldData!.usuarioId) {
+      //   return res.status(403).json({
+      //     success: false,
+      //     mensaje: 'No tienes permisos para realizar esta acción',
+      //   });
+      // }
+      // Realizamos la acción
+      const newData = {
+        titulo: req.body.titulo || oldData.titulo,
+        descripcion: req.body.descripcion || oldData.descripcion,
+        plataforma: req.body.plataforma || oldData.plataforma,
+        fecha: req.body.fecha || oldData.fecha,
+        activo: Boolean(req.body.activo) || oldData.activo,
+        imagen: req.body.imagen || oldData.imagen,
+        usuarioId: req.body.usuarioId || oldData.usuarioId,
+      };
+      data = await JuegoBD.update(newData, {
+        where: {
+          id: req.params.id,
+        },
+      });
+      return res.status(200).json(data);
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        mensaje: err.toString(),
+      });
+    }
+  }
 
   /**
    * Elimina un elemento dado su ID
@@ -166,36 +164,37 @@ class JuegosController {
    * @param res Response
    * @returns 200 si OK y elemento nuevo JSON
    */
-  // public async remove(req: Request, res: Response) {
-  //   try {
-  //     // Lo de existe no los podíamos ahorrar ya que findOneAndUpdate te puede dar dicho error
-  //     // Pero lo hacemos porque hemos dicho que no podemos modificarlo si no es nuestro, por eso necesitamos este valor
-  //     // Si no este if podría ir abajo de dicha función para analizar su resultado
-  //     let data = await JuegoBD().findById(req.params.id);
-  //     if (!data) {
-  //       return res.status(404).json({
-  //         success: false,
-  //         mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
-  //       });
-  //     }
-  //     // Tenemos permiso, una vez que podemos acceder al objeto
-  //     const juego: any = data;
-  //     if (req.user.id !== juego!.usuarioId) {
-  //       return res.status(403).json({
-  //         success: false,
-  //         mensaje: 'No tienes permisos para realizar esta acción',
-  //       });
-  //     }
-  //     // Realizamos la acción
-  //     data = await JuegoBD().findByIdAndDelete(req.params.id);
-  //     return res.status(200).json(toJSON(data));
-  //   } catch (err) {
-  //     return res.status(500).json({
-  //       success: false,
-  //       mensaje: err.toString(),
-  //     });
-  //   }
-  // }
+  public async remove(req: Request, res: Response) {
+    try {
+      // Existe
+      let data = await JuegoBD.findByPk(req.params.id);
+      if (!data) {
+        return res.status(404).json({
+          success: false,
+          mensaje: `No se ha encontrado ningún juego con ID: ${req.params.id}`,
+        });
+      }
+      // Tenemos permiso, una vez que podemos acceder al objeto
+      if (Number(req.user.id) !== Number(data.dataValues.usuarioId)) {
+        return res.status(403).json({
+          success: false,
+          mensaje: 'No tienes permisos para realizar esta acción',
+        });
+      }
+      // Realizamos la acción
+      data = await JuegoBD.destroy({
+        where: {
+          id: req.params.id,
+        },
+      });
+      return res.status(200).json(data);
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        mensaje: err.toString(),
+      });
+    }
+  }
 }
 
 // Exportamos el módulo

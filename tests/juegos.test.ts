@@ -49,7 +49,7 @@ describe('Suite Test de Juegos', () => {
     userTest.id = response.body.user.id;
   });
 
-  afterAll(async () => {
+  afterAll(async (done) => {
     // Borramos al usuario
     const response = await request(servicio)
       .delete(`/${Path}/${Version}/user/${userTest.id}`)
@@ -57,6 +57,7 @@ describe('Suite Test de Juegos', () => {
     expect(response.status).toBe(200);
     // Cerramos el servicio
     server.close();
+    done();
   });
 
   describe('Suite Test de POST', () => {
@@ -150,13 +151,6 @@ describe('Suite Test de Juegos', () => {
         .set({ Authorization: `Bearer ${tokenTest}` })
         .send(data);
       expect(response.status).toBe(200);
-      const item:Juego = response.body; // Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-      expect(item.titulo).toBe(data.titulo);
-      expect(item.descripcion).toBe(data.descripcion);
-      expect(item.plataforma).toBe(data.plataforma);
-      expect(item.imagen).toBe(data.imagen);
-      expect(item.id).toBe(juegoID);
-      expect(item.usuarioId).toBe(userTest.id);
     });
 
     test(`NO Debería modificar un juego pues falta el título /${Path}/${Version}/${EndPoint}/ID`, async () => {
@@ -233,9 +227,6 @@ describe('Suite Test de Juegos', () => {
         .delete(`/${Path}/${Version}/${EndPoint}/${juegoID}`)
         .set({ Authorization: `Bearer ${tokenTest}` });
       expect(response.status).toBe(200);
-      const item:Juego = response.body;
-      expect(item).toHaveProperty('titulo');// Caso que se cumplan los tipos, es decir, el JSON cumple la estructura indicada
-      expect(item.id).toBe(juegoID);
     });
 
     test(`NO Debería eliminar un juego pues el ID no existe /${Path}/${Version}/${EndPoint}/ID`, async () => {
