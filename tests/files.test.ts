@@ -50,14 +50,15 @@ describe('Suite Test de Ficheros', () => {
     userTest.id = response.body.user.id;
   });
 
-  afterAll(async () => {
+  afterAll(async (done) => {
     // Borramos al usuario
     const response = await request(servicio)
       .delete(`/${Path}/${Version}/user/${userTest.id}`)
       .set({ Authorization: `Bearer ${tokenTest}` });
     expect(response.status).toBe(200);
     // Cerramos el servicio
-    server.close();
+    await server.close();
+    done();
   });
 
   describe('Suite Test de POST', () => {

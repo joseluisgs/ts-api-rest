@@ -27,9 +27,10 @@ describe('Suite Test de Usuarios', () => {
   beforeAll(async () => {
     servicio = await server.start();
   });
-  afterAll(async () => {
+  afterAll(async (done) => {
     // Cerramos el servicio
-    server.close();
+    await server.close();
+    done();
   });
 
   describe('Suite Test de POST', () => {

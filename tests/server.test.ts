@@ -19,7 +19,7 @@ describe('Suite Test de Servidor', () => {
   });
 
   afterAll(async (done) => {
-    server.close();
+    await server.close();
     done();
   });
 
