@@ -7,6 +7,7 @@
 import mongoose from 'mongoose';
 import chalk from 'chalk';
 import env from './env';
+// Modelos
 
 /**
  * configuración de conexión a la base de datos siguiendo un patrón singleton
@@ -70,10 +71,17 @@ class Database {
     return this.conn;
   }
 
+  /**
+   * Cierra la conexión
+   * @returns
+   */
   async close() {
     return this.conn.close();
   }
 
+  /**
+   * Elimina las todas las colecciones
+   */
   async removeCollections() {
     const collections = await this.conn.db.collections();
     collections.forEach(async (collection) => collection.deleteMany({}));
