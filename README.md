@@ -1,5 +1,5 @@
 # TypeScrip API REST
-Ejemplo de un API REST realizada con TypeScript.
+Ejemplo de un API REST realizada con TypeScript. Autenticación, CRUD, transferencia de ficheros. Modos de trabajo en: Memoria, MongoDB o MariaDB. Despliegue en Docker.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178c6)](https://www.typescriptlang.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ed)](https://www.docker.com/)
@@ -21,15 +21,20 @@ Ejemplo de un API REST realizada con TypeScript.
     - [Docker](#docker)
     - [Docker Compose](#docker-compose)
     - [Docker Hub](#docker-hub)
+  - [Versiones con BB.DD](#versiones-con-bbdd)
+    - [MongoDB](#mongodb)
+      - [Mongo-Express](#mongo-express)
+    - [MariaDB](#mariadb)
+      - [Adminer](#adminer)
   - [Prueba y consumo](#prueba-y-consumo)
-  - [MongoDB](#mongodb)
-    - [Mongo-Express](#mongo-express)
   - [Autor](#autor)
   - [Licencia](#licencia)
 
 ## Sobre el proyecto
 
-El proyecto consiste en que tengas un ejemplo de API REST pero realizada con TypeScript con el objetivo de mejorar con tipos tus desarrollos. Además propone el uso de ficheros, autenticación y autorización mediante JWT. Tiene dos modos de uso Memoria o con MongoDB. Acceso desde: http://localhost:8000.
+El proyecto consiste en que tengas un ejemplo de API REST pero realizada con TypeScript con el objetivo de mejorar con tipos tus desarrollos. Además propone el uso de ficheros, autenticación y autorización mediante JWT. Tiene tres modos de uso Memoria, con MongoDB (NoSQL) y MariaDB (SQL). 
+
+Acceso desde: http://localhost:8000.
 
 ![assets/image.png](https://hiddenbg.zentica-global.com/wp-content/uploads/2020/12/secure-rest-api-in-nodejs-18f43b3033c239da5d2525cfd9fdc98f.png)
 
@@ -46,6 +51,7 @@ En todo momento se ofrece información de la petición en base a los códigos de
 Este proyecto está basado en dos modos de funcionamiento en la url: http://localhost:8000. 
 - Memoria: Usando almacenamiento en memoria. Lo tienes en la rama Memoria.
 - MogoDB: Usando almacenamiento en MogoDB. Lo tienes en la rama MongoDB.
+- MariaDB: Usando almacenamiento en MariaDB. Lo tienes en la rama MariaDB.
 
 ## Autenticación y Autorización: JWT y Middleware
 Se ha implementado un sistema de atenticación y autorización basado en JWT y aplicando un Middleware para analizar si el usuario puede entrar a un recurso, ya sea por que está autenticado para ello (auth), o tiene permisos dependiendo su rol (grant), o dicho recurso le pertenece, si tenemos datos que los relacionen (owner). Se ha jugado con distintas políticas dependiendo del recurso y se puede adaptar a las distintas necesidades del problema. En el código podrás ver distintas soluciones con middleware o dentro del controlador.
@@ -94,12 +100,14 @@ Te recomiendo leer el fichero package.json:
 - npm run test:coverage: obtiene el índice de cobertura del código.
 - npm run test:watch: realiza los test mientras modificas el código.
 - npm run test:sec: realiza los test de manera secuencial pues puede dar error al cerrar el servidor.
-- npm run docker:mongo: incia sel servidor local MongoDB y Mongo-Express en desarrollo
+- npm run docker:mongo: incia sel servidor local MongoDB y Mongo-Express en desarrollo (si estás en su rama)
+- npm run docker:mariadb: incia sel servidor local MariaDB y Adminer en desarrollo (Si estás en su rama)
 - npm run docker:clean: limpia todos lso dockers
 - npm run docker:deploy: lanza el fichero docker-compose para producción
 ```
 
 ## Despliegue
+El desppliegue dependerá de la rama.
 ### Docker
 Esta API se puede desplegar con Docker si te gusta ya sea a través de su Dockerfile o a otraves de Docker Hub, para ello:
 ```bash
@@ -111,20 +119,30 @@ Se ha optimizado el uso de contenedores usando Docker Compose y acceder desde ht
 ```bash
 - docker-compose up -d
 ```
-
 ### Docker Hub
 Disponible en: https://hub.docker.com/r/joseluisgs/ts-api-rest
 
-## Prueba y consumo
-Puedes probar y consumir la API usando por ejemplo Postman y su [fichero](./TS-API-REST.postman_collection.json).Deberás completar las llamadas que hagan uso de los tokens.
+## Versiones con BB.DD
+Las versiones de almacenamiento con BB.DD dependerán de cada rama
 
-## MongoDB
+### MongoDB
 Para probar y hacer pruebas locales con MongoDB puedes usar el fichero mongo.sh, o simplemente ejecutar el compose de MongoDB y Mongo-Express:
 ```bash
 - docker-compose -f mongo-compose.yml up -d
 ```
-### Mongo-Express
+#### Mongo-Express
 Esta apliación web te permite manejar MongoDB a partir de una interfaz web en: http://localhost:8081/
+
+### MariaDB
+Para probar y hacer pruebas locales con MariaDB puedes usar el fichero mariadb.sh, o simplemente ejecutar el compose de MariaDB y Adminer:
+```bash
+- docker-compose -f maria-compose.yml up -d
+```
+#### Adminer
+Esta apliación web te permite manejar MariaDB a partir de una interfaz web en: http://localhost:8080/
+
+## Prueba y consumo
+Puedes probar y consumir la API usando por ejemplo Postman y su [fichero](./TS-API-REST.postman_collection.json).Deberás completar las llamadas que hagan uso de los tokens.
 
 ## Autor
 
