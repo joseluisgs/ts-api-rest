@@ -31,8 +31,8 @@ class Database {
       useFindAndModify: false, // si no salta las funciones deprecated
     };
     // activamos  el modo depurador si así lo tenemos en nuestro fichero, solo si no estamos en test
-    if (env.NODE_ENV !== 'test' && env.DB_DEBUG !== 'false') {
-      mongoose.set('debug', true);
+    if (env.NODE_ENV !== 'test') {
+      mongoose.set('debug', env.DB_DEBUG);
     }
     this.conn = mongoose.createConnection(host, options);
   }
