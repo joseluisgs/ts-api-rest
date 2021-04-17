@@ -41,14 +41,14 @@ const env = {
   BC_SALT: Number(process.env.BC_SALT) || 10,
 
   // MARIADB
-  DB_DEBUG: Boolean(process.env.DB_DEBUG) || false, // puede ser true
+  DB_DEBUG: process.env.DB_DEBUG === 'true', // puede ser true
   DB_POOLSIZE: Number(process.env.DB_POOLSIZE) || 200,
   DB_USER: process.env.DB_USER || '',
   DB_PASS: process.env.DB_PASS || '',
   DB_URL: process.env.DB_URL || 'localhost',
   DB_PORT: Number(process.env.DB_PORT) || 3306,
   DB_NAME: process.env.DB_NAME || '',
-  DB_SYNC: Boolean(process.env.DB_SYNC) || false,
+  DB_SYNC: process.env.DB_SYNC === 'true',
 };
 
 export default env;
