@@ -7,6 +7,7 @@
 import mongoose from 'mongoose';
 import chalk from 'chalk';
 import env from './env';
+import e from 'express';
 // Modelos
 
 /**
@@ -30,8 +31,8 @@ class Database {
       useFindAndModify: false, // si no salta las funciones deprecated
     };
     // activamos  el modo depurador si así lo tenemos en nuestro fichero, solo si no estamos en test
-    if (env.NODE_ENV !== 'test') {
-      mongoose.set('debug', env.DB_DEBUG);
+    if (env.NODE_ENV !== 'test' && env.DB_DEBUG !== 'false') {
+      mongoose.set('debug', true);
     }
     this.conn = mongoose.createConnection(host, options);
   }

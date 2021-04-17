@@ -49,6 +49,7 @@ const env = {
   DB_URL: process.env.DB_URL || 'localhost',
   DB_PORT: Number(process.env.DB_PORT) || 27017,
   DB_NAME: process.env.DB_NAME,
+  DB_SYNC: process.env.DB_SYNC || false,
 };
 
 export default env;
