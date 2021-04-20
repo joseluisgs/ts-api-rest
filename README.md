@@ -1,5 +1,5 @@
 # TypeScrip API REST
-Ejemplo de un API REST realizada con TypeScript. Autenticación, CRUD, transferencia de ficheros. Modos de trabajo en: Memoria, MongoDB o MariaDB. Despliegue en Docker.
+Ejemplo de un API REST realizada con TypeScript. Autenticación, CRUD, transferencia de ficheros. Modos de trabajo en: Memoria, MongoDB o MariaDB. Despliegue en Docker y test con Jest.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178c6)](https://www.typescriptlang.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ed)](https://www.docker.com/)
