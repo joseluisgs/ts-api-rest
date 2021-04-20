@@ -11,6 +11,8 @@ const conn = MariaDB.getConnection();
 const UserBD = MariaDB.getModels().User;
 
 // METODOS AUXILIARES
+// Algunos de estos métodos auxiliares es otra forma de hacerlo si no usaramos Express Validator
+
 /**
  * Comprueba que recibe los datos mínimos para lígin
  * @param req Request

@@ -55,6 +55,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
+    "express-validator": "^6.10.0",
     "helmet": "^4.4.1",
     "jwt-simple": "^0.5.6",
     "mariadb": "^2.5.3",

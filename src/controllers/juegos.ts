@@ -9,6 +9,7 @@ const conn = MariaDB.getConnection();
 const JuegoBD = MariaDB.getModels().Juego;
 
 // METODOS AUXILIARES
+// Algunos de estos métodos auxiliares es otra forma de hacerlo si no usaramos Express Validator
 
 /**
  * Comprueba que se nos pasa todos los datos que neesitamos

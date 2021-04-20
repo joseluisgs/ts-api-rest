@@ -13,6 +13,7 @@ Ejemplo de un API REST realizada con TypeScript.
   - [Arquitectura y diseño](#arquitectura-y-diseño)
   - [Modos de funcionamiento](#modos-de-funcionamiento)
   - [Autenticación y Autorización: JWT y Middleware](#autenticación-y-autorización-jwt-y-middleware)
+  - [Validadores de datos](#validadores-de-datos)
   - [EndPoints](#endpoints)
   - [TDD: JEST](#tdd-jest)
   - [Producción y Desarrollo](#producción-y-desarrollo)
@@ -52,6 +53,9 @@ Este proyecto está basado en tres modos de funcionamiento (puedes verlos en sus
 
 ## Autenticación y Autorización: JWT y Middleware
 Se ha implementado un sistema de atenticación y autorización basado en JWT y aplicando un Middleware para analizar si el usuario puede entrar a un recurso, ya sea por que está autenticado para ello (auth), o tiene permisos dependiendo su rol (grant), o dicho recurso le pertenece, si tenemos datos que los relacionen (owner). Se ha jugado con distintas políticas dependiendo del recurso y se puede adaptar a las distintas necesidades del problema. En el código podrás ver distintas soluciones con middleware o dentro del controlador.
+
+## Validadores de datos
+Se ha implemedo dos sistemas de validación de campos según los requisitos de los tipos de datos. Por un lado un middleware de validación y por otro, si no queremos hacerlo de esta manera, con funciones auxiliares en el propio controlador.
 
 ## EndPoints
 Los Endpoints para conectarse y consumir esta api rest, empiezan siempre por /api/vx/recurso, donde x es a versión de esta api, y recurso es el recurso a consumir, por ejemplo /api/v1/juegos desde http://localhost:8000.
