@@ -4,7 +4,7 @@
 
 import { Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-import db from '../database';
+import mongoDB from '../database';
 
 // Creación del esquema
 const FileSchema = new Schema(
@@ -31,5 +31,5 @@ const FileSchema = new Schema(
 FileSchema.plugin(uniqueValidator, { mensaje: 'Error, esperaba {PATH} único.' });
 
 // const JuegoModel = () => db.connection().model('Juego', JuegoSchema);
-const FileDB = () => db.connection().model('File', FileSchema);
+const FileDB = () => mongoDB.getConnection().model('File', FileSchema);
 export default FileDB;

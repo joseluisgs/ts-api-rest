@@ -2,11 +2,10 @@ import express from 'express';
 import http from 'http';
 import chalk from 'chalk';
 import { AddressInfo } from 'node:net';
-import mongoose from 'mongoose';
 import env from './env';
 import config from './config';
 import router from './router';
-import db from './database';
+import mongoDB from './database';
 
 /**
  * Clase servidor de la API REST
@@ -15,8 +14,6 @@ class Server {
   private app: express.Express;
 
   private servicio!: http.Server;
-
-  private mongoDB!: mongoose.Connection;
 
   /**
    * Constructor
@@ -32,7 +29,12 @@ class Server {
    */
   async start() {
     // No arrancamos hasta qye MongoDB esté lista
-    this.mongoDB = await db.connect();
+    await mongoDB.start();
+    // Si queremos tirar la base de datos y comenzar desde cero,
+    if (process.env.NODE_ENV !== 'test' && env.DB_SYNC) {
+      await mongoDB.removeCollections();
+      console.log(chalk.yellow('🗃  Colleciones borradas y re-sincronizadas'));
+    }
 
     // Le apliacamos la configuracion a nuestro Servidor
     config(this.app);
@@ -57,7 +59,7 @@ class Server {
    */
   async close() {
     // Desconectamos MongoDB
-    await this.mongoDB.close();
+    await mongoDB.close();
     // Desconectamos el socket server
     this.servicio.close();
     if (process.env.NODE_ENV !== 'test') {

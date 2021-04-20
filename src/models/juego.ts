@@ -3,7 +3,7 @@
  */
 
 import { Schema } from 'mongoose';
-import db from '../database';
+import mongoDB from '../database';
 
 // Creación del esquema
 const JuegoSchema = new Schema(
@@ -65,5 +65,5 @@ const JuegoSchema = new Schema(
 // });
 
 // const JuegoModel = () => db.connection().model('Juego', JuegoSchema);
-const JuegoDB = () => db.connection().model('Juego', JuegoSchema);
+const JuegoDB = () => mongoDB.getConnection().model('Juego', JuegoSchema);
 export default JuegoDB;

@@ -41,7 +41,7 @@ const env = {
   BC_SALT: Number(process.env.BC_SALT) || 10,
 
   // MONGODB
-  DB_DEBUG: process.env.DB_DEBUG || 'false', // puede ser true
+  DB_DEBUG: process.env.DB_DEBUG === 'true',
   DB_POOLSIZE: Number(process.env.DB_POOLSIZE) || 200,
   DB_PROTOCOL: process.env.DB_PROTOCOL || 'mongodb',
   DB_USER: process.env.DB_USER || '',
@@ -49,6 +49,7 @@ const env = {
   DB_URL: process.env.DB_URL || 'localhost',
   DB_PORT: Number(process.env.DB_PORT) || 27017,
   DB_NAME: process.env.DB_NAME,
+  DB_SYNC: process.env.DB_SYNC === 'true',
 };
 
 export default env;
